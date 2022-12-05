@@ -2,8 +2,10 @@ package com.auggie.student_server.controller;
 
 import com.auggie.student_server.entity.Student;
 import com.auggie.student_server.service.StudentService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +18,7 @@ import java.util.Map;
  * @Version 1.0.0
  */
 
+@Slf4j
 @RestController
 @CrossOrigin("*")
 @RequestMapping("/student")
@@ -29,22 +32,27 @@ public class StudentController {
         return studentService.save(student);
     }
 
+    /**
+     * 学生登录
+     *
+     * @param student
+     * @return
+     */
     @PostMapping("/login")
     public boolean login(@RequestBody Student student) {
-        System.out.println("正在验证学生登陆 " + student);
-        Student s = studentService.findById(student.getSid());
-        if (s == null || !s.getPassword().equals(student.getPassword())) {
+        log.info("正在验证学生登陆 " + student);
+        Student s = studentService.findById(student.getStudentId());
+        if (ObjectUtils.isEmpty(s) || !s.getStudentPwd().equals(student.getStudentPwd())) {
             return false;
-        }
-        else {
+        } else {
             return true;
         }
     }
 
     @PostMapping("/findBySearch")
     public List<Student> findBySearch(@RequestBody Student student) {
-        Integer fuzzy = (student.getPassword() == null) ? 0 : 1;
-        return studentService.findBySearch(student.getSid(), student.getSname(), fuzzy);
+        Integer fuzzy = (student.getStudentPwd() == null) ? 0 : 1;
+        return studentService.findBySearch(student.getStudentId(), student.getStudentName(), fuzzy);
     }
 
     @GetMapping("/findById/{sid}")

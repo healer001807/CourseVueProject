@@ -40,8 +40,8 @@ public class StudentService {
 
     public List<Student> findBySearch(Integer sid, String sname, Integer fuzzy) {
         Student student = new Student();
-        student.setSid(sid);
-        student.setSname(sname);
+        student.setStudentId(sid);
+        student.setStudentName(sname);
         fuzzy = (fuzzy == null) ? 0 : fuzzy;
 
         System.out.println();
@@ -53,8 +53,14 @@ public class StudentService {
         return studentMapper.findAll().size();
     }
 
-    public Student findById(Integer sid) {
-        return studentMapper.findById(sid);
+    /**
+     * 根据学生id查询学生
+     *
+     * @param studentId
+     * @return
+     */
+    public Student findById(Integer studentId) {
+        return studentMapper.findById(studentId);
     }
 
     public boolean updateById(Student student) {

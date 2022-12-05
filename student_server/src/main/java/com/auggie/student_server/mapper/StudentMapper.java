@@ -21,7 +21,7 @@ public interface StudentMapper {
 //    select
     public List<Student> findAll();
 
-    public Student findById(@Param("sid") Integer sid);
+    public Student findById(@Param("studentId") Integer studentId);
 
     public List<Student> findBySearch(@Param("student") Student student, @Param("fuzzy") Integer fuzzy);
 

@@ -17,7 +17,17 @@ import org.apache.ibatis.type.Alias;
 @AllArgsConstructor
 @Alias("Student")
 public class Student {
-    private Integer sid;
-    private String sname;
-    private String password;
+    /**
+     * 学生id
+     */
+
+    private Integer studentId;
+    /**
+     * 学生姓名
+     */
+    private String studentName;
+    /**
+     * 学生密码
+     */
+    private String studentPwd;
 }

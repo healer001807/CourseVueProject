@@ -4,15 +4,22 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.auggie.student_server.mapper.StudentMapper">
     <select id="findAll" resultType="Student">
-        SELECT * FROM studentms.s;
+        SELECT * FROM studentms.t_student
     </select>
 
-    <select id="findById" resultType="Student">
-        SELECT * FROM studentms.s WHERE sid = #{sid};
+    <resultMap id="studentInfoBase" type="Student">
+        <id property="studentId" column="sid"/>
+        <result property="studentName" column="student_name"/>
+        <result property="studentPwd" column="student_pwd"/>
+    </resultMap>
+
+    <!--根据查询学生信息-->
+    <select id="findById" resultMap="studentInfoBase" parameterType="Student">
+        SELECT sid,student_name,student_pwd FROM studentms.t_student WHERE sid = #{studentId}
     </select>
 
     <select id="findBySearch" resultType="Student">
-        SELECT * FROM studentms.s
+        SELECT * FROM studentms.t_student
         <where>
             <if test="student.sid != null">
                 sid = #{student.sid}
@@ -29,17 +36,17 @@
     </select>
 
     <update id="updateById">
-        UPDATE studentms.s SET
+        UPDATE studentms.t_student SET
         sname = #{student.sname},
         password = #{student.password}
-        WHERE sid = #{student.sid};
+        WHERE sid = #{student.sid}
     </update>
 
     <insert id="save">
-        INSERT INTO studentms.s (sname, password) VALUES (#{student.sname}, #{student.password})
+        INSERT INTO studentms.t_student (sname, password) VALUES (#{student.sname}, #{student.password})
     </insert>
 
     <delete id="deleteById">
-        DELETE FROM studentms.s WHERE sid = #{sid}
+        DELETE FROM studentms.t_student WHERE sid = #{sid}
     </delete>
 </mapper>

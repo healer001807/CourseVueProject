@@ -133,8 +133,10 @@ export default {
             })
           }
           else if (that.ruleForm.type === 'student') {
-            let form = {sid: that.ruleForm.id, password: that.ruleForm.password}
-            axios.post("http://localhost:10086/student/login", form).then(function (resp) {
+            let form = {studentId: that.ruleForm.id, studentPwd: that.ruleForm.password}
+            /*全局url*/
+            // axios.post(this.glob.INTERFACES.login, form).then(function (resp) {
+            axios.post(this.api.globalUrl+"student/login", form).then(function (resp) {
               console.log("学生登陆验证信息：" + resp.data)
               check = resp.data
               if (check === true) {
