@@ -1,2 +1,7 @@
 # Project exclude paths
 /student_server/target/
+.idea
+*.iml
+*.md
+*.classpath
+*.ipr
