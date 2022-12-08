@@ -1,6 +1,7 @@
 package com.auggie.student_server.service;
 
 import com.auggie.student_server.entity.Student;
+import com.auggie.student_server.exception.ValidationException;
 import com.auggie.student_server.mapper.StudentMapper;
 import com.auggie.student_server.utils.ResultCode;
 import com.auggie.student_server.utils.ResultUtils;
@@ -63,14 +64,15 @@ public class StudentServiceImpl implements StudentService {
      * @param studentId
      * @return
      */
-    public ResultUtils findById(Integer studentId) {
+    public Student findById(Integer studentId) {
         if (StringUtils.isNull(studentId)) {
-            return ResultUtils.error(ResultCode.PARAM_IS_NOT_EMPTY.getCode(), ResultCode.PARAM_IS_NOT_EMPTY.getMsg());
+            throw new ValidationException("测试参数不能为空");
         }
         Student student = studentMapper.findById(studentId);
-        if (ObjectUtils.isEmpty(student))
-
-
+        if (ObjectUtils.isEmpty(student)) {
+            throw new ValidationException("测试学生实体类不能为空");
+        }
+        return student;
     }
 
     public boolean updateById(Student student) {
