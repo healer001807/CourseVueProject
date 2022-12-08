@@ -2,7 +2,6 @@ package com.auggie.student_server.service;
 
 import com.auggie.student_server.entity.Student;
 import com.auggie.student_server.mapper.StudentMapper;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,42 +15,13 @@ import java.util.List;
  * @Version 1.0.0
  */
 
-@Service
-public class StudentService {
-    @Autowired
-    private StudentMapper studentMapper;
+public interface StudentService {
 
-    public List<Student> findByPage(Integer num, Integer size) {
-        // num：第几页，size：一页多大
-        // num：从零开始
-        List<Student> studentList = studentMapper.findAll();
-        ArrayList<Student> list = new ArrayList<Student>();
+    public List<Student> findByPage(Integer num, Integer size);
 
-        int start = size * num;
-        int end = size * (num + 1);
-        int sz = studentList.size();
+    public List<Student> findBySearch(Integer sid, String sname, Integer fuzzy);
 
-        for (int i = start; i < end && i < sz; i++) {
-            list.add(studentList.get(i));
-        }
-
-        return list;
-    }
-
-    public List<Student> findBySearch(Integer sid, String sname, Integer fuzzy) {
-        Student student = new Student();
-        student.setStudentId(sid);
-        student.setStudentName(sname);
-        fuzzy = (fuzzy == null) ? 0 : fuzzy;
-
-        System.out.println();
-
-        return studentMapper.findBySearch(student, fuzzy);
-    }
-
-    public Integer getLength() {
-        return studentMapper.findAll().size();
-    }
+    public Integer getLength();
 
     /**
      * 根据学生id查询学生
@@ -59,19 +29,11 @@ public class StudentService {
      * @param studentId
      * @return
      */
-    public Student findById(Integer studentId) {
-        return studentMapper.findById(studentId);
-    }
+    public Student findById(Integer studentId);
 
-    public boolean updateById(Student student) {
-        return studentMapper.updateById(student);
-    }
+    public boolean updateById(Student student);
 
-    public boolean save(Student student) {
-        return studentMapper.save(student);
-    }
+    public boolean save(Student student);
 
-    public boolean deleteById(Integer sid) {
-        return studentMapper.deleteById(sid);
-    }
+    public boolean deleteById(Integer sid);
 }
