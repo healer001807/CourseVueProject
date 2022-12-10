@@ -1,5 +1,8 @@
 package com.auggie.student_server.utils;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,19 +15,16 @@ import lombok.NoArgsConstructor;
  **/
 @NoArgsConstructor
 @Data
+@ApiModel("响应信息")
 public class ResultUtils<T> {
-    /**
-     * 响应码值
-     */
+
+    @ApiModelProperty(value = "响应码值")
     private String returnCode;
-    /**
-     * 响应信息
-     */
+
+    @ApiModelProperty(value = "响应信息")
     private String returnMsg;
 
-    /**
-     * 返回结果集
-     */
+    @ApiModelProperty(value = "返回结果集")
     private Object data;
 
 

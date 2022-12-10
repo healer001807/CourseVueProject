@@ -2,6 +2,7 @@ package com.auggie.student_server.service;
 
 import com.auggie.student_server.entity.Student;
 import com.auggie.student_server.mapper.StudentMapper;
+import com.auggie.student_server.utils.ResultUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,11 +30,19 @@ public interface StudentService {
      * @param studentId
      * @return
      */
-    public Student findById(Integer studentId);
+    public ResultUtils findById(Integer studentId);
 
     public boolean updateById(Student student);
 
     public boolean save(Student student);
 
     public boolean deleteById(Integer sid);
+
+    /**
+     * 学生登录
+     *
+     * @param student
+     * @return
+     */
+    ResultUtils login(Student student);
 }

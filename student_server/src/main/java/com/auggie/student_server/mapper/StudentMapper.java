@@ -18,20 +18,26 @@ import java.util.List;
 @Repository
 public interface StudentMapper {
 
-//    select
+    //    select
     public List<Student> findAll();
 
+    /**
+     * 根据学生id查询学生
+     *
+     * @param studentId
+     * @return
+     */
     public Student findById(@Param("studentId") Integer studentId);
 
     public List<Student> findBySearch(@Param("student") Student student, @Param("fuzzy") Integer fuzzy);
 
-//    update
+    //    update
     public boolean updateById(@Param("student") Student student);
 
-//    insert
+    //    insert
     public boolean save(@Param("student") Student student);
 
-//    delete
+    //    delete
     public boolean deleteById(@Param("sid") Integer sid);
 
 }

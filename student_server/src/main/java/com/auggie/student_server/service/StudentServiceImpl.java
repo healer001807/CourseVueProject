@@ -1,5 +1,6 @@
 package com.auggie.student_server.service;
 
+import com.auggie.student_server.constant.MessageConstant;
 import com.auggie.student_server.entity.Student;
 import com.auggie.student_server.exception.ValidationException;
 import com.auggie.student_server.mapper.StudentMapper;
@@ -64,15 +65,16 @@ public class StudentServiceImpl implements StudentService {
      * @param studentId
      * @return
      */
-    public Student findById(Integer studentId) {
+    public ResultUtils findById(Integer studentId) {
         if (StringUtils.isNull(studentId)) {
-            throw new ValidationException("测试参数不能为空");
+            throw new ValidationException(MessageConstant.STUDENT_ID_IS_NOT_EMPTY); //参数不能为空
         }
-        Student student = studentMapper.findById(studentId);
-        if (ObjectUtils.isEmpty(student)) {
-            throw new ValidationException("测试学生实体类不能为空");
+        //根据id查询学生
+        Student currentStudent = studentMapper.findById(studentId);
+        if (ObjectUtils.isEmpty(currentStudent)) {
+            throw new ValidationException(MessageConstant.STUDENT_QUERY_FAIL);
         }
-        return student;
+        return new ResultUtils(ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMsg(), currentStudent);
     }
 
     public boolean updateById(Student student) {
@@ -85,5 +87,21 @@ public class StudentServiceImpl implements StudentService {
 
     public boolean deleteById(Integer sid) {
         return studentMapper.deleteById(sid);
+    }
+
+    @Override
+    public ResultUtils<String> login(Student student) {
+        if (StringUtils.isNull(student.getStudentId())) {
+            throw new ValidationException(MessageConstant.STUDENT_ID_IS_NOT_EMPTY); //参数不能为空
+        }
+        Student currentStudent = studentMapper.findById(student.getStudentId());
+        if (ObjectUtils.isEmpty(currentStudent)) {
+            throw new ValidationException(MessageConstant.STUDENT_QUERY_FAIL);
+        }
+        //查询成功,密码不相等
+        if (!student.getStudentPwd().equals(currentStudent.getStudentPwd())) {
+            throw new ValidationException(MessageConstant.PLEASE_CHECK_PASSWORD);
+        }
+        return new ResultUtils<String>(ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMsg());
     }
 }

@@ -2,14 +2,14 @@ package com.auggie.student_server.controller;
 
 import com.auggie.student_server.entity.Student;
 import com.auggie.student_server.service.StudentService;
+import com.auggie.student_server.utils.ResultUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @Auther: auggie
@@ -18,6 +18,7 @@ import java.util.Map;
  * @Version 1.0.0
  */
 
+@Api("学生控制层")
 @Slf4j
 @RestController
 @CrossOrigin("*")
@@ -32,21 +33,11 @@ public class StudentController {
         return studentService.save(student);
     }
 
-    /**
-     * 学生登录
-     *
-     * @param student
-     * @return
-     */
+    @ApiOperation("学生登录")
     @PostMapping("/login")
-    public boolean login(@RequestBody Student student) {
+    public ResultUtils login(@RequestBody Student student) {
         log.info("正在验证学生登陆 " + student);
-        Student s = studentService.findById(student.getStudentId());
-        if (ObjectUtils.isEmpty(s) || !s.getStudentPwd().equals(student.getStudentPwd())) {
-            return false;
-        } else {
-            return true;
-        }
+        return studentService.login(student);
     }
 
     @PostMapping("/findBySearch")
@@ -55,10 +46,11 @@ public class StudentController {
         return studentService.findBySearch(student.getStudentId(), student.getStudentName(), fuzzy);
     }
 
-    @GetMapping("/findById/{sid}")
-    public Student findById(@PathVariable("sid") Integer sid) {
-        System.out.println("正在查询学生信息 By id " + sid);
-        return studentService.findById(sid);
+    @ApiOperation(value = "根据id查询学生信息")
+    @GetMapping("/findById/{studentId}")
+    public ResultUtils findById(@PathVariable("studentId") Integer studentId) {
+        log.info("正在查询学生信息 By id " + studentId);
+        return studentService.findById(studentId);
     }
 
     @GetMapping("/findByPage/{page}/{size}")

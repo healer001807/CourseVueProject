@@ -1,10 +1,16 @@
 spring:
   profiles:
     active: dev
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher #swagger高版本
 
 mybatis:
   type-aliases-package: com.auggie.student_server.entity
   mapper-locations: classpath:mapper/*.xml
 
+
 server:
   port: 10085
+
+

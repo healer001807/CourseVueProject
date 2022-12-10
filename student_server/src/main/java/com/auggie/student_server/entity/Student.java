@@ -1,5 +1,8 @@
 package com.auggie.student_server.entity;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,18 +19,15 @@ import org.apache.ibatis.type.Alias;
 @NoArgsConstructor
 @AllArgsConstructor
 @Alias("Student")
+@ApiModel("学生实体")
 public class Student {
-    /**
-     * 学生id
-     */
 
+    @ApiModelProperty(value = "学生id")
     private Integer studentId;
-    /**
-     * 学生姓名
-     */
+
+    @ApiModelProperty(value = "学生姓名")
     private String studentName;
-    /**
-     * 学生密码
-     */
+
+    @ApiModelProperty(value = "学生密码")
     private String studentPwd;
 }
