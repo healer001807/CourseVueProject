@@ -3,50 +3,66 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.auggie.student_server.mapper.StudentMapper">
-    <select id="findAll" resultType="Student">
-        SELECT * FROM studentms.t_student
+    <!--c查询所有学生信息-->
+    <select id="findAll" resultMap="studentInfoBase">
+        SELECT sid, student_name, student_pwd, create_time
+        FROM studentms.t_student
+        where delete_status = 1
     </select>
 
     <resultMap id="studentInfoBase" type="Student">
         <id property="studentId" column="sid"/>
         <result property="studentName" column="student_name"/>
         <result property="studentPwd" column="student_pwd"/>
+        <result property="createTime" column="create_time"/>
     </resultMap>
 
     <!--根据查询学生信息-->
     <select id="findById" resultMap="studentInfoBase" parameterType="Student">
-        SELECT sid,student_name,student_pwd FROM studentms.t_student WHERE sid = #{studentId}
+        SELECT sid, student_name, student_pwd
+        FROM studentms.t_student
+        WHERE sid = #{studentId}
+          and delete_status = 1
     </select>
 
-    <select id="findBySearch" resultType="Student">
-        SELECT * FROM studentms.t_student
-        <where>
-            <if test="student.sid != null">
-                sid = #{student.sid}
+    <!--按条件查询学生-->
+    <select id="findBySearch" resultMap="studentInfoBase">
+        SELECT sid,student_name,student_pwd,create_time FROM studentms.t_student
+        where delete_status = 1
+        <if test="studentId != null">
+            sid = #{studentId}
+        </if>
+        <if test="student.studentName != null">
+            <if test="fuzzy == 0">
+                AND student_name = #{studentName}
             </if>
-            <if test="student.sname != null">
-                <if test="fuzzy == 0">
-                    AND sname = #{student.sname}
-                </if>
-                <if test="fuzzy == 1">
-                    AND sname LIKE CONCAT('%', #{student.sname}, '%')
-                </if>
+            <if test="fuzzy == 1">
+                AND student_name LIKE CONCAT('%', #{studentName}, '%')
             </if>
-        </where>
+        </if>
     </select>
 
-    <update id="updateById">
-        UPDATE studentms.t_student SET
-        sname = #{student.sname},
-        password = #{student.password}
-        WHERE sid = #{student.sid}
+    <!--更新学生-->
+    <update id="updateById" parameterType="Student">
+        UPDATE studentms.t_student
+        SET student_name = #{studentName},
+            student_pwd  = #{studentPwd},
+            update_time  =now()
+        WHERE sid = #{studentId}
+          and delete_status = 1
     </update>
 
-    <insert id="save">
-        INSERT INTO studentms.t_student (sname, password) VALUES (#{student.sname}, #{student.password})
+    <!--保存学生-->
+    <insert id="save" parameterType="Student">
+        INSERT INTO studentms.t_student (student_name, student_pwd, create_time, update_time)
+        VALUES (#{studentName}, #{studentPwd}, now(), now())
     </insert>
 
-    <delete id="deleteById">
-        DELETE FROM studentms.t_student WHERE sid = #{sid}
+    <!--根据学生id删除学生-->
+    <delete id="deleteById" parameterType="integer">
+        update studentms.t_student
+        set delete_status =0,
+            update_time   =now()
+        WHERE sid = #{studentId}
     </delete>
 </mapper>

@@ -11,4 +11,7 @@ public class MessageConstant {
     public static final String STUDENT_ID_IS_NOT_EMPTY = "学生编号不能为空";
     public static final String STUDENT_QUERY_FAIL = "学生查询失败";
     public static final String PLEASE_CHECK_PASSWORD = "您输入的密码错误，请重新输入";
+    public static final String SAVE_STUDENT_FAIL = "添加学生失败";
+    public static final String UPDATE_STUDENT_FAIL = "更新学生失败";
+    public static final String DELETE_STUDENT_FAIL = "删除学生失败";
 }

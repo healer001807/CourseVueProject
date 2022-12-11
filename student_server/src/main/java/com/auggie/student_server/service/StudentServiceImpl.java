@@ -7,6 +7,7 @@ import com.auggie.student_server.mapper.StudentMapper;
 import com.auggie.student_server.utils.ResultCode;
 import com.auggie.student_server.utils.ResultUtils;
 import com.auggie.student_server.utils.StringUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,7 @@ import java.util.List;
  * @Description: StudentService
  * @Version 1.0.0
  */
-
+@Slf4j
 @Service
 public class StudentServiceImpl implements StudentService {
     @Autowired
@@ -77,16 +78,41 @@ public class StudentServiceImpl implements StudentService {
         return new ResultUtils(ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMsg(), currentStudent);
     }
 
-    public boolean updateById(Student student) {
-        return studentMapper.updateById(student);
+    public ResultUtils updateById(Student student) {
+        try {
+            //id不能为空
+            if (StringUtils.isNull(student.getStudentId())) {
+                throw new ValidationException(MessageConstant.STUDENT_ID_IS_NOT_EMPTY); //参数不能为空
+            }
+            studentMapper.updateById(student);
+            return ResultUtils.success(ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMsg());
+        } catch (Exception e) {
+            log.error("更新学生信息失败" + e);
+            throw new ValidationException(MessageConstant.UPDATE_STUDENT_FAIL);
+        }
     }
 
-    public boolean save(Student student) {
-        return studentMapper.save(student);
+    public ResultUtils save(Student student) {
+        try {
+            studentMapper.save(student);
+            return ResultUtils.success(ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMsg());
+        } catch (Exception e) {
+            log.error("添加学习信息错误" + e);
+            throw new ValidationException(MessageConstant.SAVE_STUDENT_FAIL);
+        }
     }
 
-    public boolean deleteById(Integer sid) {
-        return studentMapper.deleteById(sid);
+    public ResultUtils deleteById(Integer studentId) {
+        try {
+            if (StringUtils.isNull(studentId)) {
+                throw new ValidationException(MessageConstant.STUDENT_ID_IS_NOT_EMPTY); //参数不能为空
+            }
+            studentMapper.deleteById(studentId);
+            return ResultUtils.success(ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMsg());
+        } catch (Exception e) {
+            log.error("添加学习信息错误" + e);
+            throw new ValidationException(MessageConstant.DELETE_STUDENT_FAIL);
+        }
     }
 
     @Override

@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.ibatis.type.Alias;
 
+import java.util.Date;
+
 /**
  * @Auther: auggie
  * @Date: 2022/2/8 16:11
@@ -30,4 +32,8 @@ public class Student {
 
     @ApiModelProperty(value = "学生密码")
     private String studentPwd;
+    @ApiModelProperty(value = "创建时间")
+    private Date createTime;
+    @ApiModelProperty(value = "更新时间")
+    private Date updateTime;
 }

@@ -32,11 +32,29 @@ public interface StudentService {
      */
     public ResultUtils findById(Integer studentId);
 
-    public boolean updateById(Student student);
+    /**
+     * 更新学生信息
+     *
+     * @param student
+     * @return
+     */
+    public ResultUtils updateById(Student student);
 
-    public boolean save(Student student);
+    /**
+     * 保存学生
+     *
+     * @param student
+     * @return
+     */
+    public ResultUtils save(Student student);
 
-    public boolean deleteById(Integer sid);
+    /**
+     * 删除学生信息
+     *
+     * @param sid
+     * @return
+     */
+    public ResultUtils deleteById(Integer sid);
 
     /**
      * 学生登录

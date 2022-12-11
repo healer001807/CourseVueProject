@@ -18,7 +18,11 @@ import java.util.List;
 @Repository
 public interface StudentMapper {
 
-    //    select
+    /**
+     * 查询所有学生信息
+     *
+     * @return
+     */
     public List<Student> findAll();
 
     /**
@@ -29,15 +33,37 @@ public interface StudentMapper {
      */
     public Student findById(@Param("studentId") Integer studentId);
 
+    /**
+     * 条件查询学生信息
+     *
+     * @param student
+     * @param fuzzy
+     * @return
+     */
     public List<Student> findBySearch(@Param("student") Student student, @Param("fuzzy") Integer fuzzy);
 
-    //    update
+    /**
+     * 更新学生信息
+     *
+     * @param student
+     * @return
+     */
     public boolean updateById(@Param("student") Student student);
 
-    //    insert
-    public boolean save(@Param("student") Student student);
+    /**
+     * 保存学生
+     *
+     * @param student
+     * @return
+     */
+    public boolean save(Student student);
 
-    //    delete
-    public boolean deleteById(@Param("sid") Integer sid);
+    /**
+     * 删除学生信息
+     *
+     * @param studentId
+     * @return
+     */
+    public boolean deleteById(@Param("studentId") Integer studentId);
 
 }

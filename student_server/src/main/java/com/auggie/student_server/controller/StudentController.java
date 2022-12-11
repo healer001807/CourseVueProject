@@ -27,9 +27,10 @@ public class StudentController {
     @Autowired
     private StudentService studentService;
 
+    @ApiOperation(value = "添加学生信息")
     @PostMapping("/addStudent")
-    public boolean addStudent(@RequestBody Student student) {
-        System.out.println("正在保存学生对象" + student);
+    public ResultUtils addStudent(@RequestBody Student student) {
+        log.info("正在保存学生对象" + student);
         return studentService.save(student);
     }
 
@@ -40,6 +41,7 @@ public class StudentController {
         return studentService.login(student);
     }
 
+    @ApiOperation("条件查询学生信息")
     @PostMapping("/findBySearch")
     public List<Student> findBySearch(@RequestBody Student student) {
         Integer fuzzy = (student.getStudentPwd() == null) ? 0 : 1;
@@ -53,6 +55,7 @@ public class StudentController {
         return studentService.findById(studentId);
     }
 
+    @ApiOperation("分页查询学生信息")
     @GetMapping("/findByPage/{page}/{size}")
     public List<Student> findByPage(@PathVariable("page") int page, @PathVariable("size") int size) {
         System.out.println("查询学生列表分页 " + page + " " + size);
@@ -64,15 +67,17 @@ public class StudentController {
         return studentService.getLength();
     }
 
-    @GetMapping("/deleteById/{sid}")
-    public boolean deleteById(@PathVariable("sid") int sid) {
-        System.out.println("正在删除学生 sid：" + sid);
-        return studentService.deleteById(sid);
+    @ApiOperation("删除学生信息")
+    @GetMapping("/deleteById/{studentId}")
+    public ResultUtils deleteById(@PathVariable("studentId") int studentId) {
+        log.info("正在删除学生 studentId：" + studentId);
+        return studentService.deleteById(studentId);
     }
 
+    @ApiOperation("更新学生信息")
     @PostMapping("/updateStudent")
-    public boolean updateStudent(@RequestBody Student student) {
-        System.out.println("更新 " + student);
+    public ResultUtils updateStudent(@RequestBody Student student) {
+        log.info("更新 " + student);
         return studentService.updateById(student);
     }
 }
