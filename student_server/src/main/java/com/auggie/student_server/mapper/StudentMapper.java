@@ -40,7 +40,7 @@ public interface StudentMapper {
      * @param fuzzy
      * @return
      */
-    public List<Student> findBySearch(@Param("student") Student student, @Param("fuzzy") Integer fuzzy);
+    public List<Student> findBySearch(Student student, @Param("fuzzy") Integer fuzzy);
 
     /**
      * 更新学生信息

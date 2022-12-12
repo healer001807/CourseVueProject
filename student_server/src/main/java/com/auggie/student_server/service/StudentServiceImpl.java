@@ -45,15 +45,15 @@ public class StudentServiceImpl implements StudentService {
         return list;
     }
 
-    public List<Student> findBySearch(Integer sid, String sname, Integer fuzzy) {
-        Student student = new Student();
-        student.setStudentId(sid);
-        student.setStudentName(sname);
-        fuzzy = (fuzzy == null) ? 0 : fuzzy;
-
-        System.out.println();
-
-        return studentMapper.findBySearch(student, fuzzy);
+    public ResultUtils findBySearch(Student student) {
+        try {
+            Integer fuzzy = (student.getStudentPwd() == null) ? 0 : 1;
+            List<Student> studentList = studentMapper.findBySearch(student, fuzzy);
+            return ResultUtils.success(ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMsg(), studentList);
+        } catch (Exception e) {
+            log.error("条件查询异常" + e);
+            throw new ValidationException(MessageConstant.STUDENT_QUERY_FAIL);
+        }
     }
 
     public Integer getLength() {

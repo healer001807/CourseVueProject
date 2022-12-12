@@ -43,9 +43,8 @@ public class StudentController {
 
     @ApiOperation("条件查询学生信息")
     @PostMapping("/findBySearch")
-    public List<Student> findBySearch(@RequestBody Student student) {
-        Integer fuzzy = (student.getStudentPwd() == null) ? 0 : 1;
-        return studentService.findBySearch(student.getStudentId(), student.getStudentName(), fuzzy);
+    public ResultUtils findBySearch(@RequestBody Student student) {
+        return studentService.findBySearch(student);
     }
 
     @ApiOperation(value = "根据id查询学生信息")

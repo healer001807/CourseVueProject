@@ -26,13 +26,13 @@
     </select>
 
     <!--按条件查询学生-->
-    <select id="findBySearch" resultMap="studentInfoBase">
+    <select id="findBySearch" resultMap="studentInfoBase" parameterType="Student">
         SELECT sid,student_name,student_pwd,create_time FROM studentms.t_student
         where delete_status = 1
-        <if test="studentId != null">
-            sid = #{studentId}
+        <if test="studentId != null ">
+            and sid = #{studentId}
         </if>
-        <if test="student.studentName != null">
+        <if test="studentName != null">
             <if test="fuzzy == 0">
                 AND student_name = #{studentName}
             </if>

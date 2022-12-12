@@ -20,7 +20,13 @@ public interface StudentService {
 
     public List<Student> findByPage(Integer num, Integer size);
 
-    public List<Student> findBySearch(Integer sid, String sname, Integer fuzzy);
+    /**
+     * 条件查询
+     *
+     * @param student
+     * @return
+     */
+    public ResultUtils findBySearch(Student student);
 
     public Integer getLength();
 
