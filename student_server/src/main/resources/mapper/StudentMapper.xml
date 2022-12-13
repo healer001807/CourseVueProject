@@ -44,7 +44,7 @@
     </select>
 
     <!--更新学生-->
-    <update id="updateById" parameterType="Student">
+    <update id="updateById" parameterType="com.auggie.student_server.entity.Student">
         UPDATE studentms.t_student
         SET student_name = #{studentName},
             student_pwd  = #{studentPwd},

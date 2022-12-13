@@ -48,7 +48,7 @@ public interface StudentMapper {
      * @param student
      * @return
      */
-    public boolean updateById(@Param("student") Student student);
+    public boolean updateById(Student student);
 
     /**
      * 保存学生

@@ -11,12 +11,12 @@
           width="150">
       </el-table-column>
       <el-table-column
-          prop="sname"
+          prop="studentName"
           label="姓名"
           width="120">
       </el-table-column>
       <el-table-column
-          prop="password"
+          prop="studentPwd"
           label="密码"
           width="120">
       </el-table-column>
@@ -52,34 +52,34 @@
 <script>
 export default {
   methods: {
+    //删除学生
     deleteStudent(row) {
       const that = this
-      axios.get('http://localhost:10086/student/deleteById/' + row.sid).then(function (resp) {
-        if (resp.data === true) {
-          that.$message({
-            showClose: true,
-            message: '删除成功',
-            type: 'success'
-          });
-          console.log(that.tmpList === null)
-          if (that.tmpList === null) {
-            window.location.reload()
-          }
-          else {
-            that.$router.push('/queryStudent')
-          }
-        }
-        else {
-          that.$message({
-            showClose: true,
-            message: '删除出错，请查询数据库连接',
-            type: 'error'
-          });
-        }
-      }).catch(function (e) {
+      axios.get(that.api.globalUrl + 'student/deleteById/' + row.sid)
+          .then((resp) => {
+            if ("000000" === resp.data.returnCode) {
+              that.$message({
+                showClose: true,
+                message: '删除' + resp.data.returnMsg,
+                type: 'success'
+              });
+              console.log(that.tmpList === null)
+              if (that.tmpList === null) {
+                window.location.reload()
+              } else {
+                that.$router.push('/queryStudent')
+              }
+            } else {
+              that.$message({
+                showClose: true,
+                message: resp.data.returnMsg,
+                type: 'error'
+              });
+            }
+          }).catch(function (e) {
         that.$message({
           showClose: true,
-          message: '删除出错，存在外键依赖',
+          message: '删除出错',
           type: 'error'
         });
       })
@@ -88,11 +88,20 @@ export default {
       page = page - 1
       if (this.tmpList === null) {
         const that = this
-        axios.get('http://localhost:10086/student/findByPage/' + page + '/' + that.pageSize).then(function (resp) {
-          that.tableData = resp.data
-        })
-      }
-      else {
+        axios.get(this.api.globalUrl + 'student/findByPage/' + page + '/' + that.pageSize)
+            .then((resp) => {
+              //查询失败
+              if (!"000000" === resp.data.returnCode) {
+                that.$message({
+                  showClose: true,
+                  message: resp.data.returnMsg,
+                  type: 'error'
+                });
+                return;
+              }
+              that.tableData = resp.data;
+            })
+      } else {
         let that = this
         let start = page * that.pageSize, end = that.pageSize * (page + 1)
         let length = that.tmpList.length
@@ -127,29 +136,32 @@ export default {
     // 是否从查询页跳转
     this.ruleForm = this.$route.query.ruleForm
     if (this.$route.query.ruleForm === undefined || (this.ruleForm.sid === null && this.ruleForm.sname === null)) {
-      axios.get('http://localhost:10086/student/getLength').then(function (resp) {
-        console.log("获取列表总长度: " + resp.data)
-        that.total = resp.data
-      })
 
-      axios.get('http://localhost:10086/student/findByPage/0/' + that.pageSize).then(function (resp) {
-        that.tableData = resp.data
-      })
-    }
-    else {
+      //分页查询
+      axios.get(this.api.globalUrl + 'student/findByPage/1/' + that.pageSize)
+          .then((resp) => {
+            if ("000000" === resp.data.returnCode) {
+              that.tableData = resp.data.data.list;
+              that.total = resp.data.data.total;
+            } else {
+              that.$message.error(resp.data.returnMsg)
+            }
+          });
+    } else {
       // 从查询页跳转并且含查询
       console.log('正在查询跳转数据')
       console.log(this.ruleForm)
-      axios.post('http://localhost:10086/student/findBySearch', this.ruleForm).then(function (resp) {
-        console.log('获取查询数据：')
-        that.tmpList = resp.data
-        that.total = resp.data.length
-        console.log(that.tmpList)
-        let start = 0, end = that.pageSize
-        let length = that.tmpList.length
-        let ans = end < length ? end : length
-        that.tableData = that.tmpList.slice(start, ans)
-      })
+      axios.post(this.api.globalUrl + 'student/findBySearch', this.ruleForm)
+          .then((resp) => {
+            console.log('获取查询数据：')
+            that.tmpList = resp.data.data;
+            that.total = resp.data.data.length;
+            console.log(that.tmpList)
+            let start = 0, end = that.pageSize
+            let length = that.tmpList.length
+            let ans = end < length ? end : length
+            that.tableData = that.tmpList.slice(start, ans)
+          });
     }
   }
 }

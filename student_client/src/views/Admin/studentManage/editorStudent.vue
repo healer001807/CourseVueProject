@@ -1,11 +1,12 @@
 <template>
   <div>
-    <el-form style="width: 60%" :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-      <el-form-item label="学生姓名" prop="sname">
-        <el-input v-model="ruleForm.sname" :value="ruleForm.sname"></el-input>
+    <el-form style="width: 60%" :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px"
+             class="demo-ruleForm">
+      <el-form-item label="学生姓名" prop="studentName">
+        <el-input v-model="ruleForm.sname" :value="ruleForm.studentName"></el-input>
       </el-form-item>
-      <el-form-item label="初始密码" prop="password">
-        <el-input v-model="ruleForm.password" :value="ruleForm.password"></el-input>
+      <el-form-item label="初始密码" prop="studentPwd">
+        <el-input v-model="ruleForm.password" :value="ruleForm.studentPwd"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
@@ -21,16 +22,16 @@ export default {
     return {
       ruleForm: {
         sid: null,
-        sname: null,
-        password: null
+        studentName: null,
+        studentPwd: null
       },
       rules: {
-        sname: [
-          { required: true, message: '请输入名称', trigger: 'blur' },
-          { min: 2, max: 5, message: '长度在 2 到 5 个字符', trigger: 'blur' }
+        studentName: [
+          {required: true, message: '请输入名称', trigger: 'blur'},
+          {min: 2, max: 5, message: '长度在 2 到 5 个字符', trigger: 'blur'}
         ],
-        password: [
-          { required: true, message: '请输入密码', trigger: 'change' }
+        studentPwd: [
+          {required: true, message: '请输入密码', trigger: 'change'}
         ],
       }
     };
@@ -39,13 +40,21 @@ export default {
     const that = this
     if (this.$route.query.sid === undefined) {
       this.ruleForm.sid = 1
-    }
-    else {
+    } else {
       this.ruleForm.sid = this.$route.query.sid
     }
-    axios.get('http://localhost:10086/student/findById/' + this.ruleForm.sid).then(function (resp) {
-      that.ruleForm = resp.data
-    })
+    axios.get(that.api.globalUrl + 'student/findById/' + this.ruleForm.sid)
+        .then((resp) => {
+          if ("000000" === resp.data.returnCode) {
+            that.ruleForm = resp.data.data;
+          } else {
+            that.$message({
+              showClose: true,
+              message: resp.data.returnMsg,
+              type: 'error'
+            });
+          }
+        });
   },
   methods: {
     submitForm(formName) {
@@ -53,20 +62,20 @@ export default {
         if (valid) {
           // 通过前端校验
           const that = this
-          console.log(this.ruleForm)
-          axios.post("http://localhost:10086/student/updateStudent", this.ruleForm).then(function (resp) {
-            if (resp.data === true) {
-              that.$message({
-                showClose: true,
-                message: '编辑成功',
-                type: 'success'
-              });
-            }
-            else {
-              that.$message.error('编辑失败，请检查数据库');
-            }
-            that.$router.push("/studentList")
-          })
+          this.ruleForm.studentId = this.ruleForm.sid;
+          axios.post(that.api.globalUrl + 'student/updateStudent', this.ruleForm)
+              .then(function (resp) {
+                if ('000000' === resp.data.returnCode) {
+                  that.$message({
+                    showClose: true,
+                    message: '编辑' + resp.data.returnMsg,
+                    type: 'success'
+                  });
+                } else {
+                  that.$message.error(resp.data.returnMsg);
+                }
+                that.$router.push("/studentList")
+              })
         } else {
           return false;
         }
@@ -74,9 +83,6 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
-    },
-    test() {
-      console.log(this.ruleForm)
     }
   }
 }

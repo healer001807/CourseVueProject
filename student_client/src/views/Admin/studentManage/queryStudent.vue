@@ -7,10 +7,10 @@
             <el-form-item label="学号" prop="sid">
               <el-input v-model.number="ruleForm.sid"></el-input>
             </el-form-item>
-            <el-form-item label="学生姓名" prop="sname">
+            <el-form-item label="学生姓名" prop="studentName">
               <el-input v-model="ruleForm.sname"></el-input>
             </el-form-item>
-            <el-form-item label="模糊查询" prop="password">
+            <el-form-item label="模糊查询" prop="studentPwd">
               <el-switch v-model="ruleForm.password"></el-switch>
             </el-form-item>
             <el-form-item>
@@ -31,14 +31,14 @@ export default {
     return {
       ruleForm: {
         sid: null,
-        sname: null,
-        password: true
+        studentName: null,
+        studentPwd: true
       },
       rules: {
         sid: [
           { type: 'number', message: '必须是数字类型' }
         ],
-        sname: [
+        studentName: [
 
         ],
       }
@@ -46,8 +46,8 @@ export default {
   },
   create() {
     this.sid = null
-    this.sname = null
-    this.password = true
+    this.studentName = null
+    this.studentPwd = true
   },
   methods: {
     flush(formName) {
@@ -57,14 +57,14 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          if (this.ruleForm.password === true) {
-            this.ruleForm.password = 'fuzzy'
+          if (this.ruleForm.studentPwd === true) {
+            this.ruleForm.studentPwd = 'fuzzy'
           }
           else {
-            this.ruleForm.password = null
+            this.ruleForm.studentPwd = null
           }
           let url = null
-          if (this.ruleForm.sid === null && this.ruleForm.sname === null) {
+          if (this.ruleForm.sid === null && this.ruleForm.studentName === null) {
             url = '/studentList'
           }
           else {
