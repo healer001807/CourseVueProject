@@ -12,5 +12,8 @@ mybatis:
 
 server:
   port: 10085
-
-
+pagehelper:
+  helper-dialect: mysql
+  reasonable: false
+  support-methods-arguments: true
+  params: count=countSql

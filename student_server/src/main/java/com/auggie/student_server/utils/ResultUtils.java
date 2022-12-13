@@ -43,6 +43,18 @@ public class ResultUtils<T> {
     /**
      * 响应码值
      * 响应信息
+     *
+     * @param returnCode
+     * @param data
+     */
+    public ResultUtils(String returnCode, Object data) {
+        this.returnCode = returnCode;
+        this.data = data;
+    }
+
+    /**
+     * 响应码值
+     * 响应信息
      * 数据
      *
      * @param returnCode
@@ -65,6 +77,17 @@ public class ResultUtils<T> {
      */
     public static ResultUtils success(String returnCode, String returnMsg) {
         return new ResultUtils(returnCode, returnMsg);
+    }
+
+    /**
+     * 成功
+     *
+     * @param returnCode
+     * @param data
+     * @return
+     */
+    public static ResultUtils success(String returnCode, Object data) {
+        return new ResultUtils(returnCode, data);
     }
 
     /**

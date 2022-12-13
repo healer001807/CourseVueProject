@@ -1,16 +1,10 @@
 package com.auggie.student_server.service;
 
 import com.auggie.student_server.entity.Student;
-import com.auggie.student_server.mapper.StudentMapper;
 import com.auggie.student_server.utils.ResultUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
- * @Auther: auggie
+ * @Auther:
  * @Date: 2022/2/9 08:27
  * @Description: StudentService
  * @Version 1.0.0
@@ -18,7 +12,14 @@ import java.util.List;
 
 public interface StudentService {
 
-    public List<Student> findByPage(Integer num, Integer size);
+    /**
+     * 分页查询
+     *
+     * @param pageNum
+     * @param pageSize
+     * @return
+     */
+    public ResultUtils findByPage(Integer pageNum, Integer pageSize);
 
     /**
      * 条件查询

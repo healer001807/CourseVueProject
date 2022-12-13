@@ -3,6 +3,13 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.auggie.student_server.mapper.StudentMapper">
+    <!--学生基本映射-->
+    <resultMap id="studentInfoBase" type="Student">
+        <id property="studentId" column="sid"/>
+        <result property="studentName" column="student_name"/>
+        <result property="studentPwd" column="student_pwd"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
     <!--c查询所有学生信息-->
     <select id="findAll" resultMap="studentInfoBase">
         SELECT sid, student_name, student_pwd, create_time
@@ -10,12 +17,6 @@
         where delete_status = 1
     </select>
 
-    <resultMap id="studentInfoBase" type="Student">
-        <id property="studentId" column="sid"/>
-        <result property="studentName" column="student_name"/>
-        <result property="studentPwd" column="student_pwd"/>
-        <result property="createTime" column="create_time"/>
-    </resultMap>
 
     <!--根据查询学生信息-->
     <select id="findById" resultMap="studentInfoBase" parameterType="Student">
@@ -26,18 +27,18 @@
     </select>
 
     <!--按条件查询学生-->
-    <select id="findBySearch" resultMap="studentInfoBase" parameterType="Student">
+    <select id="findBySearch" resultMap="studentInfoBase" >
         SELECT sid,student_name,student_pwd,create_time FROM studentms.t_student
-        where delete_status = 1
-        <if test="studentId != null ">
-            and sid = #{studentId}
+        where delete_status =1
+        <if test="student.studentId != null ">
+            and sid = #{student.studentId}
         </if>
-        <if test="studentName != null">
+        <if test="student.studentName != null and student.studentName != ''">
             <if test="fuzzy == 0">
-                AND student_name = #{studentName}
+                AND student_name = #{student.studentName}
             </if>
             <if test="fuzzy == 1">
-                AND student_name LIKE CONCAT('%', #{studentName}, '%')
+                AND student_name LIKE CONCAT('%', #{student.studentName}, '%')
             </if>
         </if>
     </select>

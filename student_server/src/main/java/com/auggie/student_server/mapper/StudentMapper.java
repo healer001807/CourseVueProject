@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * @Auther: auggie
+ * @Auther:
  * @Date: 2022/2/8 16:12
  * @Description: StudentMapper
  * @Version 1.0.0
@@ -40,7 +40,7 @@ public interface StudentMapper {
      * @param fuzzy
      * @return
      */
-    public List<Student> findBySearch(Student student, @Param("fuzzy") Integer fuzzy);
+    public List<Student> findBySearch(@Param("student")Student student, @Param("fuzzy") Integer fuzzy);
 
     /**
      * 更新学生信息

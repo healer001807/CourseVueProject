@@ -7,13 +7,13 @@ import com.auggie.student_server.mapper.StudentMapper;
 import com.auggie.student_server.utils.ResultCode;
 import com.auggie.student_server.utils.ResultUtils;
 import com.auggie.student_server.utils.StringUtils;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,21 +28,19 @@ public class StudentServiceImpl implements StudentService {
     @Autowired
     private StudentMapper studentMapper;
 
-    public List<Student> findByPage(Integer num, Integer size) {
-        // num：第几页，size：一页多大
-        // num：从零开始
-        List<Student> studentList = studentMapper.findAll();
-        ArrayList<Student> list = new ArrayList<Student>();
-
-        int start = size * num;
-        int end = size * (num + 1);
-        int sz = studentList.size();
-
-        for (int i = start; i < end && i < sz; i++) {
-            list.add(studentList.get(i));
+    public ResultUtils findByPage(Integer pageNum, Integer pageSize) {
+        //为空
+        if (StringUtils.isNull(pageNum)) {
+            pageNum = 1;
         }
-
-        return list;
+        if (StringUtils.isNull(pageSize)) {
+            pageSize = 10;
+        }
+        PageHelper.startPage(pageNum, pageSize);
+        //查询所有
+        List<Student> students = studentMapper.findAll();
+        //返回数据
+        return ResultUtils.success(ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMsg(), new PageInfo(students));
     }
 
     public ResultUtils findBySearch(Student student) {
@@ -57,7 +55,8 @@ public class StudentServiceImpl implements StudentService {
     }
 
     public Integer getLength() {
-        return studentMapper.findAll().size();
+        //   return studentMapper.findAll().size();
+        return 0;
     }
 
     /**

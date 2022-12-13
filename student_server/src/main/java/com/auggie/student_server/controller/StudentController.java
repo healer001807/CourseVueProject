@@ -9,10 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 /**
- * @Auther: auggie
+ * @Auther:
  * @Date: 2022/2/8 17:37
  * @Description: StudentController
  * @Version 1.0.0
@@ -55,10 +53,10 @@ public class StudentController {
     }
 
     @ApiOperation("分页查询学生信息")
-    @GetMapping("/findByPage/{page}/{size}")
-    public List<Student> findByPage(@PathVariable("page") int page, @PathVariable("size") int size) {
-        System.out.println("查询学生列表分页 " + page + " " + size);
-        return studentService.findByPage(page, size);
+    @GetMapping("/findByPage/{pageNum}/{pageSize}")
+    public ResultUtils findByPage(@PathVariable("pageNum") int pageNum, @PathVariable("pageSize") int pageSize) {
+        log.info("查询学生列表分页 " + pageNum + " " + pageSize);
+        return studentService.findByPage(pageNum, pageSize);
     }
 
     @GetMapping("/getLength")

@@ -15,7 +15,7 @@ public class StringUtils {
      * @return
      */
     public static boolean isNull(Integer value) {
-        if (null == value || "".equals(value)) {
+        if (null == value) {
             return true;
         }
         return false;
