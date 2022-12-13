@@ -59,11 +59,6 @@ public class StudentController {
         return studentService.findByPage(pageNum, pageSize);
     }
 
-    @GetMapping("/getLength")
-    public Integer getLength() {
-        return studentService.getLength();
-    }
-
     @ApiOperation("删除学生信息")
     @GetMapping("/deleteById/{studentId}")
     public ResultUtils deleteById(@PathVariable("studentId") int studentId) {

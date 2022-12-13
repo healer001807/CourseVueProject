@@ -29,7 +29,6 @@ public interface StudentService {
      */
     public ResultUtils findBySearch(Student student);
 
-    public Integer getLength();
 
     /**
      * 根据学生id查询学生

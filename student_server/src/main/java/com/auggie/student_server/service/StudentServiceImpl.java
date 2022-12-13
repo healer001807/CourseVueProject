@@ -54,11 +54,6 @@ public class StudentServiceImpl implements StudentService {
         }
     }
 
-    public Integer getLength() {
-        //   return studentMapper.findAll().size();
-        return 0;
-    }
-
     /**
      * 根据学生id查询学生
      *
