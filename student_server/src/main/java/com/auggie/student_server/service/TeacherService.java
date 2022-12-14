@@ -4,6 +4,7 @@ import com.auggie.student_server.entity.Student;
 import com.auggie.student_server.entity.Teacher;
 import com.auggie.student_server.mapper.StudentMapper;
 import com.auggie.student_server.mapper.TeacherMapper;
+import com.auggie.student_server.utils.ResultUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,73 +13,69 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @Auther: auggie
+ * @Auther:
  * @Date: 2022/2/9 10:55
  * @Description: TeacherService
  * @Version 1.0.0
  */
 
 @Service
-public class TeacherService {
-    @Autowired
-    private TeacherMapper teacherMapper;
+public interface TeacherService {
 
-    public List<Teacher> findBySearch(Map<String, String> map) {
-        Integer tid = null;
-        String tname = null;
-        Integer fuzzy = null;
-        if (map.containsKey("tid")) {
-            try {
-                tid = Integer.parseInt(map.get("tid"));
-            }
-            catch (Exception e) {
-            }
-        }
-        if (map.containsKey("tname")) {
-            tname = map.get("tname");
-        }
-        if (map.containsKey("fuzzy")) {
-            fuzzy = map.get("fuzzy").equals("true") ? 1 : 0;
-        }
-        System.out.println(map);
-        System.out.println("查询类型：" + tid  + ", " + tname + ", " + fuzzy);
-        return teacherMapper.findBySearch(tid, tname, fuzzy);
-    }
+    /**
+     * 条件查找
+     *
+     * @param map
+     * @return
+     */
+    ResultUtils findBySearch(Map<String, String> map);
 
-    public List<Teacher> findByPage(Integer num, Integer size) {
-        // num：第几页，size：一页多大
-        // num：从零开始
-        List<Teacher> teacherList = teacherMapper.findAll();
-        ArrayList<Teacher> list = new ArrayList<Teacher>();
+    /**
+     * 分页查找
+     *
+     * @param num
+     * @param size
+     * @return
+     */
+    ResultUtils findByPage(Integer num, Integer size);
 
-        int start = size * num;
-        int end = size * (num + 1);
-        int sz = teacherList.size();
+    /**
+     * 根据id查找
+     *
+     * @param teacherId
+     * @return
+     */
+    ResultUtils findById(Integer teacherId);
 
-        for (int i = start; i < end && i < sz; i++) {
-            list.add(teacherList.get(i));
-        }
+    /**
+     * 更新老师信息
+     *
+     * @param teacher
+     * @return
+     */
+    ResultUtils updateById(Teacher teacher);
 
-        return list;
-    }
+    /**
+     * 保存老师信息
+     *
+     * @param teacher
+     * @return
+     */
+    ResultUtils save(Teacher teacher);
 
-    public Integer getLength() {
-        return teacherMapper.findAll().size();
-    }
+    /**
+     * 删除老师信息
+     *
+     * @param tid
+     * @return
+     */
+    ResultUtils deleteById(Integer tid);
 
-    public Teacher findById(Integer tid) {
-        return teacherMapper.findById(tid);
-    }
-
-    public boolean updateById(Teacher teacher) {
-        return teacherMapper.updateById(teacher);
-    }
-
-    public boolean save(Teacher teacher) {
-        return teacherMapper.save(teacher);
-    }
-
-    public boolean deleteById(Integer tid) {
-        return teacherMapper.deleteById(tid);
-    }
+    /**
+     * 教师登录
+     *
+     * @param teacher
+     * @return
+     */
+    ResultUtils login(Teacher teacher);
 }

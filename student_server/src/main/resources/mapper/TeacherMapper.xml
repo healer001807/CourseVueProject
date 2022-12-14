@@ -3,43 +3,68 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.auggie.student_server.mapper.TeacherMapper">
-    <select id="findAll" resultType="Teacher">
-        SELECT * FROM studentms.t;
+
+    <!--教师信息基本映射-->
+    <resultMap id="teacherBaseInfo" type="Teacher">
+        <id property="teacherId" column="tid"/>
+        <result property="teacherName" column="teacher_name"/>
+        <result property="teacherPwd" column="teacher_pwd"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+
+    </resultMap>
+
+    <!--查询所有-->
+    <select id="findAll" resultMap="teacherBaseInfo">
+        SELECT tid, teacher_name, teacher_pwd, create_time
+        FROM studentms.t_teacher where  delete_status =1
     </select>
 
-    <select id="findBySearch" resultType="Teacher">
-        SELECT * FROM studentms.t
-        <where>
-            <if test="tid != null">
-                tid = #{tid}
+    <!--按条件查找-->
+    <select id="findBySearch" resultMap="teacherBaseInfo" parameterType="teacher">
+        SELECT tid, teacher_name, teacher_pwd, create_time FROM studentms.t_teacher
+        where delete_status =1
+        <if test="teacher.teacherId != null">
+            and tid = #{teacher.teacherId}
+        </if>
+        <if test="teacher.teacherName != null and teacher.teacherName != '' ">
+            <if test="fuzzy == 0">
+                AND teacher_name = #{teacher.teacherName}
             </if>
-            <if test="tname != null">
-                <if test="fuzzy == 0">
-                    AND tname = #{tname}
-                </if>
-                <if test="fuzzy == 1">
-                    AND tname LIKE CONCAT('%', #{tname}, '%')
-                </if>
+            <if test="fuzzy == 1">
+                AND teacher_name LIKE CONCAT('%', #{teacher.teacherName}, '%')
             </if>
-        </where>
+        </if>
+
     </select>
 
-    <select id="findById" resultType="Teacher">
-        SELECT * FROM studentms.t WHERE tid = #{tid};
+    <!--根据id查询教师-->
+    <select id="findById" resultMap="teacherBaseInfo" parameterType="integer">
+        SELECT tid, teacher_name, teacher_pwd, create_time
+        FROM studentms.t_teacher
+        WHERE tid = #{teacherId}
     </select>
 
-    <update id="updateById">
-        UPDATE studentms.t SET
-                               tname = #{teacher.tname},
-                               password = #{teacher.password}
-        WHERE tid = #{teacher.tid};
+    <!--更新教师-->
+    <update id="updateById" parameterType="Teacher">
+        UPDATE studentms.t_teacher
+        SET teacher_name = #{teacherName},
+            teacher_pwd  = #{teacherPwd},
+            update_time  = now()
+        WHERE tid = #{teacherId}
+          and delete_status = 1
     </update>
 
-    <insert id="save">
-        INSERT INTO studentms.t (tname, password) VALUES (#{teacher.tname}, #{teacher.password})
+    <!--添加教师-->
+    <insert id="save" parameterType="Teacher">
+        INSERT INTO studentms.t_teacher (teacher_name, teacher_pwd, create_time, update_time)
+        VALUES (#{teacherName}, #{teacherPwd}, now(), now())
     </insert>
 
-    <delete id="deleteById">
-        DELETE FROM studentms.t WHERE tid = #{tid}
+    <!--根据id删除教师-->
+    <delete id="deleteById" parameterType="integer">
+        update studentms.t_teacher
+        set delete_status = 0,update_time =now()
+        WHERE tid = #{teacherId}
     </delete>
 </mapper>

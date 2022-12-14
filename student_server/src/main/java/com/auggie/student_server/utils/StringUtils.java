@@ -21,4 +21,17 @@ public class StringUtils {
         return false;
     }
 
+    /**
+     * 字符串非空
+     *
+     * @param value
+     * @return
+     */
+    public static boolean isEmpty(String value) {
+        if (null == value || "".equals(value) || value.length() == 0) {
+            return true;
+        }
+        return false;
+    }
+
 }

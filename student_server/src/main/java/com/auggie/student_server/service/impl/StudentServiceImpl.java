@@ -1,9 +1,10 @@
-package com.auggie.student_server.service;
+package com.auggie.student_server.service.impl;
 
 import com.auggie.student_server.constant.MessageConstant;
 import com.auggie.student_server.entity.Student;
 import com.auggie.student_server.exception.ValidationException;
 import com.auggie.student_server.mapper.StudentMapper;
+import com.auggie.student_server.service.StudentService;
 import com.auggie.student_server.utils.ResultCode;
 import com.auggie.student_server.utils.ResultUtils;
 import com.auggie.student_server.utils.StringUtils;
@@ -50,7 +51,7 @@ public class StudentServiceImpl implements StudentService {
             return ResultUtils.success(ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMsg(), studentList);
         } catch (Exception e) {
             log.error("条件查询异常" + e);
-            throw new ValidationException(MessageConstant.STUDENT_QUERY_FAIL);
+            throw new ValidationException(MessageConstant.QUERY_STUDENT_FAIL);
         }
     }
 
@@ -67,7 +68,7 @@ public class StudentServiceImpl implements StudentService {
         //根据id查询学生
         Student currentStudent = studentMapper.findById(studentId);
         if (ObjectUtils.isEmpty(currentStudent)) {
-            throw new ValidationException(MessageConstant.STUDENT_QUERY_FAIL);
+            throw new ValidationException(MessageConstant.QUERY_STUDENT_FAIL);
         }
         return new ResultUtils(ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMsg(), currentStudent);
     }
@@ -116,7 +117,7 @@ public class StudentServiceImpl implements StudentService {
         }
         Student currentStudent = studentMapper.findById(student.getStudentId());
         if (ObjectUtils.isEmpty(currentStudent)) {
-            throw new ValidationException(MessageConstant.STUDENT_QUERY_FAIL);
+            throw new ValidationException(MessageConstant.QUERY_STUDENT_FAIL);
         }
         //查询成功,密码不相等
         if (!student.getStudentPwd().equals(currentStudent.getStudentPwd())) {

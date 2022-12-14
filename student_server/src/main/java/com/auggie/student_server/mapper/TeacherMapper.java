@@ -1,6 +1,5 @@
 package com.auggie.student_server.mapper;
 
-import com.auggie.student_server.entity.Student;
 import com.auggie.student_server.entity.Teacher;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -18,20 +17,52 @@ import java.util.List;
 @Repository
 @Mapper
 public interface TeacherMapper {
-    //    select
-    public List<Teacher> findAll();
+    /**
+     * 查询所有教师
+     *
+     * @return
+     */
+    List<Teacher> findAll();
 
-    public Teacher findById(@Param("tid") Integer tid);
+    /**
+     * 根据id查询教师
+     *
+     * @param teacherId
+     * @return
+     */
+    Teacher findById(@Param("teacherId") Integer teacherId);
 
-    public List<Teacher> findBySearch(@Param("tid") Integer tid, @Param("tname") String tname, @Param("fuzzy") Integer fuzzy);
+    /**
+     * 按条件查找
+     *
+     * @param teacher
+     * @param fuzzy
+     * @return
+     */
+    List<Teacher> findBySearch(@Param("teacher") Teacher teacher, @Param("fuzzy") Integer fuzzy);
 
-    //    update
-    public boolean updateById(@Param("teacher") Teacher teacher);
+    /**
+     * 更新教师
+     *
+     * @param teacher
+     * @return
+     */
+    boolean updateById(Teacher teacher);
 
-    //    insert
-    public boolean save(@Param("teacher") Teacher teacher);
+    /**
+     * 添加教师信息
+     *
+     * @param teacher
+     * @return
+     */
+    boolean save(Teacher teacher);
 
-    //    delete
-    public boolean deleteById(@Param("tid") Integer tid);
+    /**
+     * 删除教师信息
+     *
+     * @param teacherId
+     * @return
+     */
+    boolean deleteById(@Param("teacherId") Integer teacherId);
 
 }
