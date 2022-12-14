@@ -19,7 +19,7 @@ public interface StudentService {
      * @param pageSize
      * @return
      */
-    public ResultUtils findByPage(Integer pageNum, Integer pageSize);
+    ResultUtils findByPage(Integer pageNum, Integer pageSize);
 
     /**
      * 条件查询
@@ -27,7 +27,7 @@ public interface StudentService {
      * @param student
      * @return
      */
-    public ResultUtils findBySearch(Student student);
+    ResultUtils findBySearch(Student student);
 
 
     /**
@@ -36,7 +36,7 @@ public interface StudentService {
      * @param studentId
      * @return
      */
-    public ResultUtils findById(Integer studentId);
+    ResultUtils findById(Integer studentId);
 
     /**
      * 更新学生信息
@@ -44,7 +44,7 @@ public interface StudentService {
      * @param student
      * @return
      */
-    public ResultUtils updateById(Student student);
+    ResultUtils updateById(Student student);
 
     /**
      * 保存学生
@@ -52,7 +52,7 @@ public interface StudentService {
      * @param student
      * @return
      */
-    public ResultUtils save(Student student);
+    ResultUtils save(Student student);
 
     /**
      * 删除学生信息
@@ -60,7 +60,7 @@ public interface StudentService {
      * @param sid
      * @return
      */
-    public ResultUtils deleteById(Integer sid);
+    ResultUtils deleteById(Integer sid);
 
     /**
      * 学生登录

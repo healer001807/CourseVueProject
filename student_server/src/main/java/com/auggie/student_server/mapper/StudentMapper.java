@@ -23,7 +23,7 @@ public interface StudentMapper {
      *
      * @return
      */
-    public List<Student> findAll();
+    List<Student> findAll();
 
     /**
      * 根据学生id查询学生
@@ -31,7 +31,7 @@ public interface StudentMapper {
      * @param studentId
      * @return
      */
-    public Student findById(@Param("studentId") Integer studentId);
+    Student findById(@Param("studentId") Integer studentId);
 
     /**
      * 条件查询学生信息
@@ -40,7 +40,7 @@ public interface StudentMapper {
      * @param fuzzy
      * @return
      */
-    public List<Student> findBySearch(@Param("student")Student student, @Param("fuzzy") Integer fuzzy);
+    List<Student> findBySearch(@Param("student") Student student, @Param("fuzzy") Integer fuzzy);
 
     /**
      * 更新学生信息
@@ -48,7 +48,7 @@ public interface StudentMapper {
      * @param student
      * @return
      */
-    public boolean updateById(Student student);
+    boolean updateById(Student student);
 
     /**
      * 保存学生
@@ -56,7 +56,7 @@ public interface StudentMapper {
      * @param student
      * @return
      */
-    public boolean save(Student student);
+    boolean save(Student student);
 
     /**
      * 删除学生信息
@@ -64,6 +64,6 @@ public interface StudentMapper {
      * @param studentId
      * @return
      */
-    public boolean deleteById(@Param("studentId") Integer studentId);
+    boolean deleteById(@Param("studentId") Integer studentId);
 
 }
