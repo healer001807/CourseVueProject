@@ -74,62 +74,72 @@ export default {
               let check = false
               let name = null
 
-              axios.get('http://localhost:10086/info/getCurrentTerm').then(function (resp) {
+              axios.get(this.api.globalUrl + 'info/getCurrentTerm').then(function (resp) {
                 sessionStorage.setItem("currentTerm", resp.data)
               })
 
-              axios.get('http://localhost:10086/info/getForbidCourseSelection').then(function (resp) {
+              axios.get(this.api.globalUrl + 'info/getForbidCourseSelection').then(function (resp) {
                 sessionStorage.setItem("ForbidCourseSelection", resp.data)
               })
 
               if (that.ruleForm.type === 'admin' || that.ruleForm.type === 'teacher') {
                 let form = {tid: that.ruleForm.id, password: that.ruleForm.password}
-                console.log(form)
-                axios.post("http://localhost:10086/teacher/login", form).then(function (resp) {
-                  console.log("教师登陆验证信息：" + resp.data)
-                  check = resp.data
-                  if (check === true) {
-                    axios.get("http://localhost:10086/teacher/findById/" + that.ruleForm.id).then(function (resp) {
-                      console.log("登陆页正在获取用户信息" + resp.data)
-                      name = resp.data.tname
+                let params = {
+                  teacherId: that.ruleForm.id,
+                  teacherPwd: that.ruleForm.password
+                }
+                axios.post(this.api.globalUrl + "teacher/login", params)
+                    .then((resp) => {
+                      console.log("教师登陆验证信息：" + resp.data)
+                      if ('000000' === resp.data.returnCode) {
+                        axios.get(this.api.globalUrl + "teacher/findById/" + that.ruleForm.id)
+                            .then(function (resp) {
+                              if ('000000' !== resp.data.returnCode) {
+                                that.$message({
+                                  showClose: true,
+                                  message: resp.data.returnMsg,
+                                  type: 'error'
+                                });
+                                return;
+                              }
+                              console.log("登陆页正在获取用户信息" + resp.data);
+                              name = resp.data.data.teacherName
 
-                      sessionStorage.setItem("token", 'true')
-                      sessionStorage.setItem("type", that.ruleForm.type)
-                      sessionStorage.setItem("name", name)
-                      sessionStorage.setItem("tid", resp.data.tid)
+                              sessionStorage.setItem("token", 'true')
+                              sessionStorage.setItem("type", that.ruleForm.type)
+                              sessionStorage.setItem("name", name)
+                              sessionStorage.setItem("tid", resp.data.data.teacherId)
 
-                      console.log('name: ' + name + ' ' + that.ruleForm.type + ' ' + resp.data.tid)
-
-                      if (that.ruleForm.type === 'admin' && name === 'admin') {
-                        that.$message({
-                          showClose: true,
-                          message: '登陆成功，欢迎 ' + name + '!',
-                          type: 'success'
-                        });
-                        that.$router.push('/admin')
-                      } else if (that.ruleForm.type === 'teacher' && name !== 'admin') {
-                        that.$message({
-                          showClose: true,
-                          message: '登陆成功，欢迎 ' + name + '!',
-                          type: 'success'
-                        });
-                        that.$router.push('/teacher')
+                              if (that.ruleForm.type === 'admin' && name === 'admin') {
+                                that.$message({
+                                  showClose: true,
+                                  message: '登陆成功，欢迎 ' + name + '!',
+                                  type: 'success'
+                                });
+                                that.$router.push('/admin')
+                              } else if (that.ruleForm.type === 'teacher' && name !== 'admin') {
+                                that.$message({
+                                  showClose: true,
+                                  message: '登陆成功，欢迎 ' + name + '!',
+                                  type: 'success'
+                                });
+                                that.$router.push('/teacher')
+                              } else {
+                                that.$message({
+                                  showClose: true,
+                                  message: 'admin 登陆失败，检查登陆类型',
+                                  type: 'error'
+                                });
+                              }
+                            })
                       } else {
                         that.$message({
                           showClose: true,
-                          message: 'admin 登陆失败，检查登陆类型',
+                          message: resp.data.returnMsg,
                           type: 'error'
                         });
                       }
-                    })
-                  } else {
-                    that.$message({
-                      showClose: true,
-                      message: '登陆失败，检查账号密码',
-                      type: 'error'
                     });
-                  }
-                })
               } else if (that.ruleForm.type === 'student') {
                 let params = {
                   studentId: that.ruleForm.id,
@@ -167,7 +177,7 @@ export default {
                         sessionStorage.setItem("token", 'true');
                         sessionStorage.setItem("type", that.ruleForm.type);
                         sessionStorage.setItem("name", resp.data.data.studentName);
-                        sessionStorage.setItem("sid", resp.data.data.studentId);
+                        sessionStorage.setItem("studentId", resp.data.data.studentId);
 
                         that.$message({
                           showClose: true,

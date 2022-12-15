@@ -6,17 +6,17 @@
         style="width: 100%">
       <el-table-column
           fixed
-          prop="tid"
+          prop="teacherId"
           label="工号"
           width="150">
       </el-table-column>
       <el-table-column
-          prop="tname"
+          prop="teacherName"
           label="姓名"
           width="150">
       </el-table-column>
       <el-table-column
-          prop="password"
+          prop="teacherPwd"
           label="密码"
           width="150">
       </el-table-column>
@@ -53,7 +53,7 @@
 export default {
   methods: {
     deleteTeacher(row) {
-      if (row.tname === 'admin') {
+      if (row.teacherName === 'admin') {
         this.$message({
           showClose: true,
           message: 'admin 不可删除',
@@ -62,23 +62,23 @@ export default {
         return
       }
       const that = this
-      axios.get('http://localhost:10086/teacher/deleteById/' + row.tid).then(function (resp) {
-        if (resp.data === true) {
-          that.$message({
-            showClose: true,
-            message: '删除成功',
-            type: 'success'
-          });
-          window.location.reload()
-        }
-        else {
-          that.$message({
-            showClose: true,
-            message: '删除出错，请查询数据库连接',
-            type: 'error'
-          });
-        }
-      }).catch(function (e) {
+      axios.get(this.api.globalUrl + 'teacher/deleteById/' + row.teacherId)
+          .then((resp) => {
+            if ('000000' === resp.data.returnCode) {
+              that.$message({
+                showClose: true,
+                message: resp.data.returnMsg,
+                type: 'success'
+              });
+              window.location.reload()
+            } else {
+              that.$message({
+                showClose: true,
+                message: resp.data.returnMsg,
+                type: 'error'
+              });
+            }
+          }).catch(function (e) {
         that.$message({
           showClose: true,
           message: '删除出错，存在外键依赖',
@@ -95,7 +95,7 @@ export default {
       that.tableData = that.tmpList.slice(start, ans)
     },
     editor(row) {
-      if (row.tname === 'admin') {
+      if (row.teacherName === 'admin') {
         this.$message({
           showClose: true,
           message: 'admin 不可编辑',
@@ -131,17 +131,16 @@ export default {
         that.tmpList = null
         that.total = null
         that.tableData = null
-        axios.post("http://localhost:10086/teacher/findBySearch", newRuleForm).then(function (resp) {
-          console.log("查询结果:");
-          console.log(newRuleForm)
-          console.log(resp)
-          that.tmpList = resp.data
-          that.total = resp.data.length
-          let start = 0, end = that.pageSize
-          let length = that.tmpList.length
-          let ans = (end < length) ? end : length
-          that.tableData = that.tmpList.slice(start, end)
-        })
+        axios.post(this.api.globalUrl + "teacher/findBySearch", newRuleForm)
+            .then(function (resp) {
+              console.log("查询结果:" + resp);
+              that.tmpList = resp.data.data
+              that.total = resp.data.data.length
+              let start = 0, end = that.pageSize
+              let length = that.tmpList.length
+              let ans = (end < length) ? end : length
+              that.tableData = that.tmpList.slice(start, end)
+            })
       },
       deep: true,
       immediate: true

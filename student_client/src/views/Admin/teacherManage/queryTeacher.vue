@@ -3,12 +3,13 @@
     <el-container>
       <el-main>
         <el-card>
-          <el-form :inline="true" :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-            <el-form-item label="工号" prop="tid">
-              <el-input v-model.number="ruleForm.tid"></el-input>
+          <el-form :inline="true" :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px"
+                   class="demo-ruleForm">
+            <el-form-item label="工号" prop="teacherId">
+              <el-input v-model.number="ruleForm.teacherId"></el-input>
             </el-form-item>
-            <el-form-item label="教师姓名" prop="tname">
-              <el-input v-model="ruleForm.tname"></el-input>
+            <el-form-item label="教师姓名" prop="teacherName">
+              <el-input v-model="ruleForm.teacherName"></el-input>
             </el-form-item>
             <el-form-item label="模糊查询" prop="fuzzy">
               <el-switch v-model="ruleForm.fuzzy"></el-switch>
@@ -27,28 +28,27 @@
 </template>
 <script>
 import TeacherList from "@/views/Admin/teacherManage/teacherList";
+
 export default {
   components: {TeacherList},
   data() {
     return {
       ruleForm: {
-        tid: null,
-        tname: null,
+        teacherId: null,
+        teacherName: null,
         fuzzy: true
       },
       rules: {
-        tid: [
-          { type: 'number', message: '必须是数字类型' }
+        teacherId: [
+          {type: 'number', message: '必须是数字类型'}
         ],
-        tname: [
-
-        ],
+        teacherName: [],
       }
     };
   },
   create() {
-    this.tid = null
-    this.tname = null
+    this.teacherId = null
+    this.teacherName = null
     this.fuzzy = true
   },
   methods: {

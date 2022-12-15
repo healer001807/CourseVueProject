@@ -3,10 +3,10 @@
     <el-form style="width: 60%" :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px"
              class="demo-ruleForm">
       <el-form-item label="学生姓名" prop="studentName">
-        <el-input v-model="ruleForm.sname"></el-input>
+        <el-input v-model="ruleForm.studentName"></el-input>
       </el-form-item>
       <el-form-item label="初始密码" prop="studentPwd">
-        <el-input v-model="ruleForm.password" show-password></el-input>
+        <el-input v-model="ruleForm.studentPwd" show-password></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>

@@ -4,10 +4,10 @@
       <el-card>
         <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
           <el-form-item label="姓名" prop="name">
-            <el-input v-model.name="ruleForm.studentName" :value="ruleForm.studentName"></el-input>
+            <el-input v-model.name="ruleForm.name" :value="ruleForm.name"></el-input>
           </el-form-item>
           <el-form-item label="密码" prop="pass">
-            <el-input type="password" v-model="ruleForm.studentPwd" autocomplete="off"></el-input>
+            <el-input type="password" v-model="ruleForm.password" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="确认密码" prop="checkPass">
             <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
@@ -37,7 +37,7 @@ export default {
     var validatePass2 = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请再次输入密码'));
-      } else if (value !== this.ruleForm.studentPwd) {
+      } else if (value !== this.ruleForm.password) {
         callback(new Error('两次输入密码不一致!'));
       } else {
         callback();
@@ -45,18 +45,18 @@ export default {
     };
     return {
       ruleForm: {
-        studentPwd: '',
+        password: '',
         checkPass: '',
-        studentName: sessionStorage.getItem('name')
+        name: sessionStorage.getItem('name')
       },
       rules: {
-        studentPwd: [
+        password: [
           {validator: validatePass, trigger: 'blur'}
         ],
         checkPass: [
           {validator: validatePass2, trigger: 'blur'}
         ],
-        studentName: [
+        name: [
           {require: true, message: '名字不能为空', trigger: 'blur'}
         ]
       }
@@ -67,7 +67,7 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           const that = this
-          sessionStorage.setItem('name', that.ruleForm.studentName)
+          sessionStorage.setItem('name', that.ruleForm.name)
           const type = sessionStorage.getItem('type')
           let form = null
           let ss = null
@@ -75,31 +75,33 @@ export default {
             ss = 'Student'
             form = {
               studentId: sessionStorage.getItem('sid'),
-              studentName: that.ruleForm.studentName,
-              studentPwd: that.ruleForm.studentPwd,
+              studentName: that.ruleForm.name,
+              studentPwd: that.ruleForm.password,
             }
           } else {
             ss = 'Teacher'
             form = {
-              tid: sessionStorage.getItem('tid'),
-              tname: that.ruleForm.name,
-              password: that.ruleForm.pass,
+              teacherId: sessionStorage.getItem('tid'),
+              teacherName: that.ruleForm.name,
+              teacherPwd: that.ruleForm.password,
             }
           }
 
           //修改密码
-          axios.post(this.api.globalUrl + type + '/update' + ss, form).then(function (resp) {
-            if ('000000' === resp.data.returnCode) {
-              that.$message({
-                showClose: true,
-                message: '编辑' + resp.data.returnMsg,
-                type: 'success'
-              });
-            } else {
-              that.$message.error(resp.data.returnMsg);
-            }
-            that.$router.push("/" + type + 'Home')
-          })
+          console.log("ddd===" + this.api.globalUrl + type + '/update' + ss)
+          axios.post(this.api.globalUrl + type + '/update' + ss, form)
+              .then((resp) => {
+                if ('000000' === resp.data.returnCode) {
+                  that.$message({
+                    showClose: true,
+                    message: '编辑' + resp.data.returnMsg,
+                    type: 'success'
+                  });
+                } else {
+                  that.$message.error(resp.data.returnMsg);
+                }
+                that.$router.push("/" + type + 'Home')
+              })
         } else {
           console.log('error submit!!');
           return false;

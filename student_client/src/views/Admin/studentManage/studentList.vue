@@ -4,12 +4,12 @@
         :data="tableData"
         border
         style="width: 100%">
-      <el-table-column
+      <el-table-colusmn
           fixed
           prop="sid"
           label="学号"
           width="150">
-      </el-table-column>
+      </el-table-colusmn>
       <el-table-column
           prop="studentName"
           label="姓名"
@@ -55,7 +55,7 @@ export default {
     //删除学生
     deleteStudent(row) {
       const that = this
-      axios.get(that.api.globalUrl + 'student/deleteById/' + row.sid)
+      axios.get(that.api.globalUrl + 'student/deleteById/' + row.studentId)
           .then((resp) => {
             if ("000000" === resp.data.returnCode) {
               that.$message({
@@ -91,7 +91,7 @@ export default {
         axios.get(this.api.globalUrl + 'student/findByPage/' + page + '/' + that.pageSize)
             .then((resp) => {
               //查询失败
-              if (!"000000" === resp.data.returnCode) {
+              if ("000000" != resp.data.returnCode) {
                 that.$message({
                   showClose: true,
                   message: resp.data.returnMsg,
@@ -99,7 +99,8 @@ export default {
                 });
                 return;
               }
-              that.tableData = resp.data;
+              that.tableData = resp.data.data.list;
+              console.log("学生==>"+that.tableData);
             })
       } else {
         let that = this
@@ -113,7 +114,7 @@ export default {
       this.$router.push({
         path: '/editorStudent',
         query: {
-          sid: row.sid
+          studentId: row.studentId
         }
       })
     }
@@ -135,7 +136,7 @@ export default {
     const that = this
     // 是否从查询页跳转
     this.ruleForm = this.$route.query.ruleForm
-    if (this.$route.query.ruleForm === undefined || (this.ruleForm.sid === null && this.ruleForm.sname === null)) {
+    if (this.$route.query.ruleForm === undefined || (this.ruleForm.studentId === null && this.ruleForm.studentName === null)) {
 
       //分页查询
       axios.get(this.api.globalUrl + 'student/findByPage/1/' + that.pageSize)

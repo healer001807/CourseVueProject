@@ -1,11 +1,12 @@
 <template>
   <div>
-    <el-form style="width: 60%" :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-      <el-form-item label="教师姓名" prop="tname">
-        <el-input v-model="ruleForm.tname" :value="ruleForm.tname"></el-input>
+    <el-form style="width: 60%" :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px"
+             class="demo-ruleForm">
+      <el-form-item label="教师姓名" prop="teacherName">
+        <el-input v-model="ruleForm.teacherName" :value="ruleForm.teacherName"></el-input>
       </el-form-item>
-      <el-form-item label="初始密码" prop="password">
-        <el-input v-model="ruleForm.password" :value="ruleForm.password"></el-input>
+      <el-form-item label="初始密码" prop="teacherPwd">
+        <el-input v-model="ruleForm.teacherPwd" :value="ruleForm.teacherPwd"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
@@ -20,17 +21,17 @@ export default {
   data() {
     return {
       ruleForm: {
-        tid: null,
-        tname: null,
-        password: null
+        teacherId: null,
+        teacherName: null,
+        teacherPwd: null
       },
       rules: {
-        tname: [
-          { required: true, message: '请输入名称', trigger: 'blur' },
-          { min: 2, max: 5, message: '长度在 2 到 5 个字符', trigger: 'blur' }
+        teacherName: [
+          {required: true, message: '请输入名称', trigger: 'blur'},
+          {min: 2, max: 5, message: '长度在 2 到 5 个字符', trigger: 'blur'}
         ],
-        password: [
-          { required: true, message: '请输入密码', trigger: 'change' }
+        teacherPwd: [
+          {required: true, message: '请输入密码', trigger: 'change'}
         ],
       }
     };
@@ -39,13 +40,22 @@ export default {
     const that = this
     if (this.$route.query.tid === undefined) {
       this.ruleForm.tid = 6
-    }
-    else {
+    } else {
       this.ruleForm.tid = this.$route.query.tid
     }
-    axios.get('http://localhost:10086/teacher/findById/' + this.ruleForm.tid).then(function (resp) {
-      that.ruleForm = resp.data
-    })
+    axios.get(this.api.global + 'teacher/findById/' + this.ruleForm.tid)
+        .then((resp) => {
+          if ('000000' === resp.data.returnCode) {
+            that.ruleForm = resp.data.data
+          } else {
+            that.$message({
+              showClose: true,
+              message: resp.data.returnMsg,
+              type: 'error'
+            });
+          }
+
+        })
   },
   methods: {
     submitForm(formName) {
@@ -63,16 +73,16 @@ export default {
             return
           }
           console.log(this.ruleForm)
-          axios.post("http://localhost:10086/teacher/updateTeacher", this.ruleForm).then(function (resp) {
-            if (resp.data === true) {
+          this.ruleForm.teacherId = this.ruleForm.tid;
+          axios.post(that.api.global + "teacher/updateTeacher", this.ruleForm).then(function (resp) {
+            if ('000000' === resp.data.returnCode) {
               that.$message({
                 showClose: true,
-                message: '编辑成功',
+                message: '编辑' + resp.data.returnMsg,
                 type: 'success'
               });
-            }
-            else {
-              that.$message.error('编辑失败，请检查数据库');
+            } else {
+              that.$message.error(resp.data.returnMsg);
             }
             that.$router.push("/queryTeacher")
           })
@@ -83,9 +93,6 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
-    },
-    test() {
-      console.log(this.ruleForm)
     }
   }
 }

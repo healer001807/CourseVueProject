@@ -15,7 +15,7 @@ export default {
   name: "infoCard",
   data() {
     return {
-      id: sessionStorage.getItem('type') === 'teacher' ? sessionStorage.getItem('tid') : sessionStorage.getItem('sid'),
+      id: sessionStorage.getItem('type') === 'teacher' ? sessionStorage.getItem('teacherId') : sessionStorage.getItem('studentId'),
       name: sessionStorage.getItem('name'),
       type: sessionStorage.getItem('type')
     }
