@@ -11,7 +11,7 @@
       <el-form-item>
         <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
         <el-button @click="resetForm('ruleForm')">重置</el-button>
-<!--        <el-button @click="test">test</el-button>-->
+        <!--        <el-button @click="test">test</el-button>-->
       </el-form-item>
     </el-form>
   </div>
@@ -36,10 +36,12 @@ export default {
       }
     };
   },
+
   created() {
     const that = this
     if (this.$route.query.studentId === undefined) {
-      this.ruleForm.studentId = 1
+      //默认查第一个
+      this.ruleForm.studentId = 1;
     } else {
       this.ruleForm.studentId = this.$route.query.studentId
     }

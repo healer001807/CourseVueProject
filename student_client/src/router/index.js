@@ -13,7 +13,6 @@ import editorTeacher from "@/views/Admin/teacherManage/editorTeacher";
 import courseManage from "@/views/Admin/courseManage/index";
 import addCourse from "@/views/Admin/courseManage/addCourse";
 import teacher from "@/views/Teacher/index";
-import queryStudent from "@/views/Admin/studentManage/queryStudent";
 import queryTeacher from "@/views/Admin/teacherManage/queryTeacher";
 import student from "@/views/Student/index";
 import editorCourse from "@/views/Admin/courseManage/editorCourse";
@@ -100,19 +99,6 @@ const routes = [
             name: '编辑学生',
             component: editorStudent,
             meta: {requireAuth: true}
-          },
-          {
-            path: '/queryStudent',
-            name: '搜索',
-            component: queryStudent,
-            meta: {requireAuth: true},
-            children: [
-              {
-                path: '/queryStudent/studentList',
-                component: studentList,
-                meta: {requireAuth: true}
-              }
-            ]
           }
         ]
       },
