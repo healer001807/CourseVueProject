@@ -17,17 +17,46 @@ import java.util.List;
 @Repository
 @Mapper
 public interface CourseMapper {
-//    select
-    public List<Course> findBySearch(@Param("cid") Integer cid,
-                                     @Param("cname") String cname, @Param("fuzzy") Integer fuzzy,
-                                     @Param("lowBound") Integer lowBound, @Param("highBound") Integer highBound);
+    /**
+     * 条件查询课程
+     *
+     * @param course
+     * @param fuzzy
+     * @param lowBound
+     * @param highBound
+     * @return
+     */
+    List<Course> findBySearch(@Param("course") Course course, @Param("fuzzy") Integer fuzzy,
+                              @Param("lowBound") Integer lowBound, @Param("highBound") Integer highBound);
 
-//    insert
-    public boolean insertCourse(@Param("course") Course course);
+    /**
+     * 保存课程
+     *
+     * @param course
+     * @return
+     */
+    boolean insertCourse(Course course);
 
-//    update
-    public boolean updateById(@Param("course") Course course);
+    /**
+     * 更新课程
+     *
+     * @param course
+     * @return
+     */
+    boolean updateById(@Param("course") Course course);
 
-//    delete
-    public boolean deleteById(@Param("cid") Integer cid);
+    /**
+     * 删除课程
+     *
+     * @param courseId
+     * @return
+     */
+    boolean deleteById(@Param("courseId") Integer courseId);
+
+    /**
+     * 查询全部课程
+     *
+     * @return
+     */
+    List<Course> findAll();
 }

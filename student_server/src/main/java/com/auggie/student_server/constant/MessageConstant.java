@@ -20,4 +20,9 @@ public class MessageConstant {
     public static final String QUERY_TEACHER_FAIL = "更新老师失败";
     public static final String TEACHER_ID_IS_NOT_EMPTY = "教师编号不能为空";
     public static final String LOGIN_ERROR = "登录失败";
+    public static final String QUERY_COURSE_ERROR = "课程查询失败";
+    public static final String UPDATE_COURSE_ERROR = "课程更新失败";
+    public static final String SAVE_COURSE_ERROR = "保存课程失败";
+    public static final String DELETE_COURSE_ERROR = "课程删除失败";
+    public static final String COURSE_ID_IS_NOT_EMPTY = "课程编号不能为空";
 }

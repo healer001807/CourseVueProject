@@ -22,6 +22,19 @@ public class StringUtils {
     }
 
     /**
+     * 判断Integer类型数据
+     *
+     * @param value
+     * @return
+     */
+    public static boolean isNotNull(Integer value) {
+        if (isNull(value)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * 字符串空
      *
      * @param value
