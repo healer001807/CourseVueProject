@@ -35,25 +35,23 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     public ResultUtils findBySearch(Map<String, String> map) {
         try {
-            Integer teacherId = null;
-            String teacherName = "";
+            Teacher teacher = new Teacher();
             Integer fuzzy = null;
             if (map.containsKey("teacherId")) {
-                String teacherId1 = map.get("teacherId");
-                if (StringUtils.isEmpty(teacherId1)) {
-                    throw new ValidationException(MessageConstant.TEACHER_ID_IS_NOT_EMPTY);
+                String teacherId = map.get("teacherId");
+                if (StringUtils.isNotEmpty(teacherId)) {
+                    teacher.setTeacherId(Integer.valueOf(teacherId));
                 }
-                teacherId = Integer.valueOf(teacherId1);
             }
             if (map.containsKey("teacherName")) {
-                teacherName = map.get("teacherName");
+                if (StringUtils.isNotEmpty(map.get("teacherName"))) {
+                    teacher.setTeacherName(map.get("teacherName"));
+                }
             }
             if (map.containsKey("fuzzy")) {
                 fuzzy = "true".equals(map.get("fuzzy")) ? 1 : 0;
             }
-            Teacher teacher = new Teacher();
-            teacher.setTeacherName(teacherName);
-            teacher.setTeacherId(teacherId);
+
             List<Teacher> teachers = teacherMapper.findBySearch(teacher, fuzzy);
             return ResultUtils.success(ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMsg(), teachers);
         } catch (Exception e) {

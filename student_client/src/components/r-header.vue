@@ -1,7 +1,7 @@
 <template>
   <div>
       <el-button type="text" style="color: #333333; font-size: 18px" @click="out()">
-        logout
+        退出登录
       </el-button>
       <el-divider direction="vertical" style="color: #333333"></el-divider>
       <i class="el-icon-paperclip" style="margin-right: 18px"></i>

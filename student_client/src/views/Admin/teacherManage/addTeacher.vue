@@ -11,7 +11,6 @@
       <el-form-item>
         <el-button type="primary" @click="submitForm('ruleForm')">提交</el-button>
         <el-button @click="resetForm('ruleForm')">重置</el-button>
-        <el-button @click="test">test</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -26,7 +25,7 @@ export default {
       },
       rules: {
         teacherName: [
-          {required: true, message: '请输入名称', trigger: 'blur'},
+          {required: true, message: '请输入姓名', trigger: 'blur'},
           {min: 2, max: 5, message: '长度在 2 到 5 个字符', trigger: 'blur'}
         ],
         teacherPwd: [
@@ -41,14 +40,13 @@ export default {
         if (valid) {
           // 通过前端校验
           const that = this
-          console.log(this.ruleForm)
           if (that.ruleForm.teacherName === 'admin') {
             that.$message({
               showClose: true,
               message: 'admin 不可添加',
               type: 'error'
             });
-            return
+            return;
           }
           //添加教师
           axios.post(this.api.globalUrl + "teacher/addTeacher", this.ruleForm)
@@ -62,7 +60,7 @@ export default {
                 } else {
                   that.$message.error(resp.data.returnMsg);
                 }
-                that.$router.push("/queryTeacher")
+                that.$router.push("/teacherList")
               })
         } else {
           return false;

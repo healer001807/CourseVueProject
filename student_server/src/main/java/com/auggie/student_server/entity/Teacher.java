@@ -1,11 +1,13 @@
 package com.auggie.student_server.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.ibatis.type.Alias;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -28,8 +30,9 @@ public class Teacher {
     private String teacherName;
     @ApiModelProperty("密码")
     private String teacherPwd;
-    private String studentPwd;
     @ApiModelProperty(value = "创建时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") //入参
+    @JsonFormat(pattern = "yyyy-MM-dd")//返参
     private Date createTime;
     @ApiModelProperty(value = "更新时间")
     private Date updateTime;

@@ -38,12 +38,12 @@ export default {
   },
   created() {
     const that = this
-    if (this.$route.query.tid === undefined) {
-      this.ruleForm.tid = 6
+    if (that.$route.query.teacherId === undefined) {
+      that.ruleForm.teacherId = 6; //不太合理，要是6被删除了，永远为空
     } else {
-      this.ruleForm.tid = this.$route.query.tid
+      that.ruleForm.teacherId = that.$route.query.teacherId
     }
-    axios.get(this.api.global + 'teacher/findById/' + this.ruleForm.tid)
+    axios.get(that.api.globalUrl + 'teacher/findById/' + that.ruleForm.teacherId)
         .then((resp) => {
           if ('000000' === resp.data.returnCode) {
             that.ruleForm = resp.data.data
@@ -54,43 +54,43 @@ export default {
               type: 'error'
             });
           }
-
-        })
+        });
   },
   methods: {
+    //修改
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           // 通过前端校验
           const that = this
-          if (that.ruleForm.tname === 'admin') {
+          if (that.ruleForm.teacherName === 'admin') {
             that.$message({
               showClose: true,
               message: 'admin 不可编辑',
               type: 'error'
             });
-            this.$router.push('/queryTeacher')
-            return
+            this.$router.push('/teacherList');
+            return;
           }
-          console.log(this.ruleForm)
-          this.ruleForm.teacherId = this.ruleForm.tid;
-          axios.post(that.api.global + "teacher/updateTeacher", this.ruleForm).then(function (resp) {
-            if ('000000' === resp.data.returnCode) {
-              that.$message({
-                showClose: true,
-                message: '编辑' + resp.data.returnMsg,
-                type: 'success'
-              });
-            } else {
-              that.$message.error(resp.data.returnMsg);
-            }
-            that.$router.push("/queryTeacher")
-          })
+          axios.post(that.api.globalUrl + "teacher/updateTeacher", this.ruleForm)
+              .then((resp) => {
+                if ('000000' === resp.data.returnCode) {
+                  that.$message({
+                    showClose: true,
+                    message: '编辑' + resp.data.returnMsg,
+                    type: 'success'
+                  });
+                } else {
+                  that.$message.error(resp.data.returnMsg);
+                }
+                that.$router.push("/teacherList")
+              })
         } else {
           return false;
         }
       });
     },
+    //重置
     resetForm(formName) {
       this.$refs[formName].resetFields();
     }

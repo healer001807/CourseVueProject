@@ -22,16 +22,29 @@ public class StringUtils {
     }
 
     /**
-     * 字符串非空
+     * 字符串空
      *
      * @param value
      * @return
      */
     public static boolean isEmpty(String value) {
-        if (null == value || "".equals(value) || value.length() == 0) {
+        if (null == value || "".equals(value) || value.length() == 0 || "null".equals(value)) {
             return true;
         }
         return false;
+    }
+
+    /**
+     * 字符串非空
+     *
+     * @param value
+     * @return
+     */
+    public static boolean isNotEmpty(String value) {
+        if (isEmpty(value)) {
+            return false;
+        }
+        return true;
     }
 
 }

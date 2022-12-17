@@ -13,7 +13,6 @@ import editorTeacher from "@/views/Admin/teacherManage/editorTeacher";
 import courseManage from "@/views/Admin/courseManage/index";
 import addCourse from "@/views/Admin/courseManage/addCourse";
 import teacher from "@/views/Teacher/index";
-import queryTeacher from "@/views/Admin/teacherManage/queryTeacher";
 import student from "@/views/Student/index";
 import editorCourse from "@/views/Admin/courseManage/editorCourse";
 import courseList from "@/views/Admin/courseManage/courseList";
@@ -37,6 +36,7 @@ import teacherQueryGradeCourse from "@/views/Teacher/teacherGradeCourseManage/te
 import teacherGradeCourseList from "@/views/Teacher/teacherGradeCourseManage/teacherGradeCourseList";
 import teacherEditorGradeCourse from "@/views/Teacher/teacherGradeCourseManage/teacherEditorGradeCourse";
 import updateInfo from "@/components/updateInfo";
+import teacherList from "@/views/Admin/teacherManage/teacherList";
 
 Vue.use(VueRouter)
 
@@ -115,9 +115,9 @@ const routes = [
             meta: {requireAuth: true}
           },
           {
-            path: '/queryTeacher',
+            path: '/teacherList',
             name: '教师列表',
-            component: queryTeacher,
+            component: teacherList,
             meta: {requireAuth: true},
             children: [
             ]
