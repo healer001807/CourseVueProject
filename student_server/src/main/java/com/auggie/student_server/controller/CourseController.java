@@ -61,7 +61,7 @@ public class CourseController {
     }
 
     @ApiOperation("查询全部课程")
-    @GetMapping("findAll/pageNum/pageSize")
+    @GetMapping("/findAll/{pageNum}/{pageSize}")
     public ResultUtils findAll(@PathVariable Integer pageNum, @PathVariable Integer pageSize) {
         return courseService.findAll(pageNum, pageSize);
     }
