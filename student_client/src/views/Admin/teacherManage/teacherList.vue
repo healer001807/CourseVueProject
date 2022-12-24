@@ -107,6 +107,7 @@ export default {
           .then((resp) => {
             if ('000000' === resp.data.returnCode) {
               that.tableData = resp.data.data.list;
+              that.total = resp.data.data.total;
             } else {
               that.$message.error(resp.data.returnMsg);
             }
@@ -122,7 +123,6 @@ export default {
       const that = this;
       that.$refs[formName].validate((valid) => {
         if (valid) {
-          debugger;
           if (that.ruleForm.teacherName === '' || that.ruleForm.teacherName === undefined) {
             that.fuzzy = false;
             that.ruleForm.fuzzy = that.fuzzy;

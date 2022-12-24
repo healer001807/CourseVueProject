@@ -143,18 +143,18 @@ const routes = [
             meta: {requireAuth: true}
           },
           {
-            path: '/queryCourse',
-            name: '搜索课程',
-            component: queryCourse,
+            path: '/courseList',
+            name: '课程列表',
+            component: courseList,
             meta: {requireAuth: true},
-            children: [
-              {
-                path: '/courseList',
-                name: '课程列表',
-                component: courseList,
-                meta: {requireAuth: true}
-              },
-            ]
+            // children: [
+            //   {
+            //     path: '/courseList',
+            //     name: '课程列表',
+            //     component: courseList,
+            //     meta: {requireAuth: true}
+            //   },
+            // ]
           },
           {
             path: '/editorCourse',

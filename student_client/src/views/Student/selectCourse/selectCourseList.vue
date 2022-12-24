@@ -8,22 +8,22 @@
         style="width: 100%">
       <el-table-column
           fixed
-          prop="cid"
+          prop="courseId"
           label="课号"
           width="150">
       </el-table-column>
       <el-table-column
-          prop="cname"
+          prop="courseName"
           label="课程号"
           width="150">
       </el-table-column>
       <el-table-column
-          prop="tid"
+          prop="teacherId"
           label="教师号"
           width="150">
       </el-table-column>
       <el-table-column
-          prop="tname"
+          prop="teacherName"
           label="教师名称"
           width="150">
       </el-table-column>
@@ -58,6 +58,7 @@
 <script>
 export default {
   methods: {
+
     select(row) {
       console.log(row)
       const cid = row.cid
@@ -78,8 +79,7 @@ export default {
             message: '选课成功',
             type: 'success'
           });
-        }
-        else {
+        } else {
           that.$message({
             showClose: true,
             message: resp.data,
@@ -99,8 +99,7 @@ export default {
             type: 'success'
           });
           window.location.reload()
-        }
-        else {
+        } else {
           that.$message({
             showClose: true,
             message: '删除出错，请查询数据库连接',
@@ -117,16 +116,6 @@ export default {
       let ans = (end < length) ? end : length
       that.tableData = that.tmpList.slice(start, ans)
     },
-  },
-
-  data() {
-    return {
-      tableData: null,
-      pageSize: 10,
-      total: null,
-      tmpList: null,
-      type: sessionStorage.getItem('type')
-    }
   },
   props: {
     ruleForm: Object

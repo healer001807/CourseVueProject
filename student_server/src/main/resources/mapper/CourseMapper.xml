@@ -40,11 +40,11 @@
     </select>
 
     <!--修改课程-->
-    <update id="updateById" parameterType="Course">
+    <update id="updateById" parameterType="course">
         UPDATE studentms.t_course
-        SET course_name   = #{courseName},
-            course_credit = #{courseCredit}
-        WHERE cid = #{courseId}
+        SET course_name   = #{course.courseName},
+            course_credit = #{course.courseCredit}
+        WHERE cid = #{course.courseId}
           and delete_status = 1
     </update>
 
