@@ -5,16 +5,18 @@
 <mapper namespace="com.auggie.student_server.mapper.StudentCourseTeacherMapper">
     <select id="findByStudentId" resultType="CourseTeacherInfo">
         SELECT c.cid, c.cname, t.tid, t.tname, sct.grade, c.ccredit
-        FROM studentms.sct sct INNER JOIN studentms.t t ON sct.tid = t.tid
-                INNER JOIN studentms.c c ON sct.cid = c.cid
-        WHERE sct.sid = #{sid} AND sct.term = #{term}
+        FROM studentms.sct sct
+                 INNER JOIN studentms.t t ON sct.tid = t.tid
+                 INNER JOIN studentms.c c ON sct.cid = c.cid
+        WHERE sct.sid = #{sid}
+          AND sct.term = #{term}
     </select>
 
     <select id="findBySearch" resultType="SCTInfo">
         SELECT c.cid, c.cname, t.tid, t.tname, s.sid, s.sname, sct.grade, sct.term
-        FROM studentms.sct sct INNER JOIN studentms.s s ON sct.sid = s.sid
-                INNER JOIN studentms.t t ON sct.tid = t.tid
-                INNER JOIN studentms.c c ON sct.cid = c.cid
+        FROM studentms.t_score_course_teacher sct INNER JOIN studentms.t_student s ON sct.sid = s.sid
+        INNER JOIN studentms.t t ON sct.tid = t.tid
+        INNER JOIN studentms.c c ON sct.cid = c.cid
         <where>
             <if test="sid != null">
                 s.sid = #{sid}
@@ -59,5 +61,38 @@
                 AND #{highBound} >= sct.grade
             </if>
         </where>
+    </select>
+
+    <resultMap id="baseScoreMap" type="com.auggie.student_server.entity.CourseTeacherInfo">
+        <id column="sctid" property="scoreId"/>
+        <result column="sid" property="studentId"/>
+        <result column="grade" property="grade"/>
+        <result column="term" property="term"/>
+        <result column="create_time" property="createTime"/>
+        <result column="student_name" property="studentName"/>
+        <result column="tid" property="teacherId"/>
+        <result column="teacher_name" property="teacherName"/>
+        <result column="cid" property="courseId"/>
+        <result column="course_name" property="courseName"/>
+
+    </resultMap>
+    <!--查询学生成绩-->
+    <select id="findAll" resultMap="baseScoreMap" parameterType="map">
+        select sct.sctid,
+               sct.sid,
+               sct.grade,
+               sct.term,
+               sct.create_time,
+               ts.student_name,
+               tt.tid,
+               tt.teacher_name,
+               tc.cid,
+               tc.course_name
+        from t_score_course_teacher sct
+                 left join t_student ts on ts.sid = sct.sid
+                 left join t_teacher tt on tt.tid = sct.tid
+                 left join t_course tc on tc.cid = sct.cid
+        where sct.term = #{term}
+          and sct.delete_status = 1
     </select>
 </mapper>

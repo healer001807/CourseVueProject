@@ -116,7 +116,7 @@ export default {
           message: '删除出错，存在外键依赖',
           type: 'error'
         });
-      }).finally(() =>{
+      }).finally(() => {
         that.findAll();
       })
     },
@@ -131,6 +131,7 @@ export default {
       });
 
     },
+    // 按条件查找
     findBySearch() {
       axios.post(this.api.globalUrl + 'course/findBySearch', this.ruleForm)
           .then((resp) => {

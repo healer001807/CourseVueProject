@@ -25,4 +25,9 @@ public class MessageConstant {
     public static final String SAVE_COURSE_ERROR = "保存课程失败";
     public static final String DELETE_COURSE_ERROR = "课程删除失败";
     public static final String COURSE_ID_IS_NOT_EMPTY = "课程编号不能为空";
+    public static final String QUERY_COURSE_INFO_ERROR = "查询开课失败";
+    public static final String QUERY_COURSE_INFO_SUCCESS = "查询开课成功";
+    public static final String DELETE_COURSE_INFO_ERROR = "开设课程删除失败";
+    public static final String UPDATE_SCORE_ERROR = "修改成绩失败";
+    public static final String QUERY_SCORE_ERROR = "成绩查询失败";
 }

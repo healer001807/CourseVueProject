@@ -7,9 +7,11 @@ import studentManage from '../views/Admin/studentManage/index'
 import addStudent from "@/views/Admin/studentManage/addStudent";
 import studentList from "@/views/Admin/studentManage/studentList";
 import editorStudent from "@/views/Admin/studentManage/editorStudent";
+
 import teacherManage from "@/views/Admin/teacherManage/index"
 import addTeacher from "@/views/Admin/teacherManage/addTeacher";
 import editorTeacher from "@/views/Admin/teacherManage/editorTeacher";
+
 import courseManage from "@/views/Admin/courseManage/index";
 import addCourse from "@/views/Admin/courseManage/addCourse";
 import teacher from "@/views/Teacher/index";
@@ -22,14 +24,15 @@ import teacherHome from "@/views/Teacher/home";
 import setCourse from "@/views/Teacher/setCourse";
 import studentHome from "@/views/Student/home";
 import myOfferCourse from "@/views/Teacher/myOfferCourse";
-import CourseTeacherManage from "@/views/Admin/selectCourseManage/index";
-import queryCourseTeacher from "@/views/Admin/selectCourseManage/queryCourseTeacher";
+import courseTeacherManage from "@/views/Admin/selectCourseManage/index";
+import courseTeacherList from "@/views/Admin/selectCourseManage/courseTeacherList";
 import studentSelectCourseManage from "@/views/Student/selectCourse/index";
 import selectCourse from "@/views/Student/selectCourse/selectCourse";
 import querySelectedCourse from "@/views/Student/selectCourse/querySelectedCourse";
 import studentCourseGrade from "@/views/Student/courseGrade/index";
 import queryCourseGrade from "@/views/Student/courseGrade/queryCourseGrade";
-import queryGradeCourse from "@/views/Admin/gradeCourseManage/queryGradeCourse";
+import gradeCourseList from "@/views/Admin/gradeCourseManage/gradeCourseList";
+import gradeCourseManage from "@/views/Admin/gradeCourseManage/index";
 import editorGradeCourse from "@/views/Admin/gradeCourseManage/editorGradeCourse";
 import teacherGradeCourseManage from "@/views/Teacher/teacherGradeCourseManage/index";
 import teacherQueryGradeCourse from "@/views/Teacher/teacherGradeCourseManage/teacherQueryGradeCourse";
@@ -167,27 +170,27 @@ const routes = [
       {
         path: '/CourseTeacher',
         name: '开课表管理',
-        component: CourseTeacherManage,
+        component: courseTeacherManage,
         meta: {requireAuth: true},
         children: [
           {
-            path: '/queryCourseTeacher',
+            path: '/courseTeacherList',
             name: '开课管理',
-            component: queryCourseTeacher,
+            component: courseTeacherList,
             meta: {requireAuth: true},
           }
         ]
       },
       {
-        name: 'admin 学生成绩管理',
+        name: '学生成绩管理',
         path: "/gradeCourseManage",
-        component: studentManage,
+        component: gradeCourseManage,
         meta: {requireAuth: true},
         children: [
           {
-            path: '/queryGradeCourse',
+            path: '/gradeCourseList',
             name: '学生成绩查询',
-            component: queryGradeCourse,
+            component: gradeCourseList,
             meta: {requireAuth: true},
           },
           {

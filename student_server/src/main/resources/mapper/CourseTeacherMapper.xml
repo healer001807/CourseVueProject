@@ -20,37 +20,48 @@
 
     <select id="findMyCourse" resultType="Course">
         SELECT c.cid, c.cname, c.ccredit
-        FROM studentms.c c INNER JOIN studentms.ct ct ON c.cid = ct.cid
-        WHERE ct.tid = #{tid} AND ct.term = #{term}
+        FROM studentms.c c
+                 INNER JOIN studentms.ct ct ON c.cid = ct.cid
+        WHERE ct.tid = #{tid}
+          AND ct.term = #{term}
     </select>
 
-    <select id="findCourseTeacherInfo" resultType="CourseTeacherInfo">
-        SELECT c.cid, c.cname, t.tid, t.tname, c.ccredit
-        FROM studentms.c c INNER JOIN studentms.ct ct ON c.cid = ct.cid
-                INNER JOIN studentms.t ON ct.tid = t.tid
-        <where>
-            <if test="tid != null">
-                t.tid = #{tid}
+    <resultMap id="findCourseTeacherInfoMap" type="CourseTeacherInfo">
+        <result column="cid" property="courseId"/>
+        <result column="course_name" property="courseName"/>
+        <result column="tid" property="teacherId"/>
+        <result column="teacher_name" property="teacherName"/>
+        <result column="course_credit" property="courseCredit"/>
+        <result column="ctid" property="courseTeacherId"/>
+    </resultMap>
+
+    <!--查询开课管理-->
+    <select id="findCourseTeacherInfo" parameterType="map"  resultMap="findCourseTeacherInfoMap">
+        SELECT c.cid, c.course_name, t.tid, t.teacher_name, c.course_credit, ct.ctid
+        FROM studentms.t_course c INNER JOIN studentms.t_course_teacher ct ON c.cid = ct.cid
+        INNER JOIN studentms.t_teacher t ON ct.tid = t.tid
+        where ct.delete_status =1
+            <if test="teacherId != null ">
+               and  t.tid = #{teacherId}
             </if>
-            <if test="tname != null">
+            <if test="teacherName != null">
                 <if test="tFuzzy == 0">
-                    AND t.tname = #{tname}
+                    AND t.teacher_name = #{teacherName}
                 </if>
                 <if test="tFuzzy == 1">
-                    AND t.tname LIKE CONCAT('%', #{tname}, '%')
+                    AND t.teacher_name LIKE CONCAT('%', #{teacherName}, '%')
                 </if>
             </if>
-            <if test="cid != null">
-                AND c.cid = #{cid}
+            <if test="courseId != null">
+                AND c.cid = #{courseId}
             </if>
-            <if test="cname != null">
+            <if test="courseName != null">
                 <if test="cFuzzy == 0">
-                    AND c.cname = #{cname}
+                    AND c.course_name = #{courseName}
                 </if>
                 <if test="cFuzzy == 1">
-                    AND c.cname LIKE CONCAT('%', #{cname}, '%')
+                    AND c.course_name LIKE CONCAT('%', #{courseName}, '%')
                 </if>
             </if>
-        </where>
     </select>
 </mapper>

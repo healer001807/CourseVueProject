@@ -2,11 +2,17 @@ package com.auggie.student_server.controller;
 
 import com.auggie.student_server.entity.Course;
 import com.auggie.student_server.entity.CourseTeacher;
-import com.auggie.student_server.entity.CourseTeacherInfo;
 import com.auggie.student_server.service.CourseTeacherService;
+import com.auggie.student_server.utils.ResultUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,12 +45,34 @@ public class CourseTeacherController {
     }
 
     @PostMapping("/findCourseTeacherInfo")
-    public List<CourseTeacherInfo> findCourseTeacherInfo(@RequestBody Map<String, String> map) {
+    public ResultUtils findCourseTeacherInfo(@RequestBody Map<String, String> map) {
         return courseTeacherService.findCourseTeacherInfo(map);
     }
 
     @PostMapping("/deleteById")
-    public boolean deleteById(@RequestBody CourseTeacher courseTeacher) {
+    public ResultUtils deleteById(@RequestBody CourseTeacher courseTeacher) {
         return courseTeacherService.deleteById(courseTeacher);
     }
+
+    @GetMapping("/testDate")
+    public ResultUtils testDate() throws ParseException {
+
+        Map<String,Object> dataMap = new HashMap<>();
+
+        String time ="2022-02-28";
+        LocalDate localDate = LocalDate.parse(time).plusMonths(1);
+
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日");
+        String format = dateTimeFormatter.format(localDate);
+        dataMap.put("localDate",format);
+        System.out.println(format);
+         time ="2022-02-28 10:10:10";
+        Date date = DateUtils.parseDate(time, "yyyy-MM-dd");
+        LocalDate parse = LocalDate.parse(time);
+        System.out.println(parse);
+        //format = LocalDateTime.parse(date).plusMonths(6).format(dateTimeFormatter);
+//        dataMap.put("localDateTime",format);
+        return ResultUtils.success("0000","22",format);
+    }
+
 }
