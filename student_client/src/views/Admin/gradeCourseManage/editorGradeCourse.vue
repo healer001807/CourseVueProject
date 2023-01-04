@@ -63,7 +63,7 @@ export default {
       }
     },
     // 修改成绩
-    editGradeById(){
+    editGradeById() {
       const that = this
 
       const params = {
