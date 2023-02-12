@@ -199,4 +199,19 @@ public class SCTServiceImpl implements SCTService {
     public ResultUtils findGradeById(CourseTeacherInfo courseTeacherInfo) {
         return null;
     }
+
+    @Override
+    public ResultUtils findCourserInfoById(Integer studentId, String term) {
+        try {
+            if (StringUtils.isEmpty(term) || StringUtils.isNull(studentId)) {
+                throw new ValidationException(MessageConstant.QUERY_COURSE_ERROR);
+            }
+            List<CourseTeacherInfo> courseTeacherInfos = studentCourseTeacherMapper.findByStudentId(studentId, term);
+
+            return ResultUtils.success(ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMsg(), courseTeacherInfos);
+        } catch (ValidationException e) {
+            logger.error("课程查询异常" + e);
+            throw new ValidationException(MessageConstant.QUERY_COURSE_ERROR);
+        }
+    }
 }

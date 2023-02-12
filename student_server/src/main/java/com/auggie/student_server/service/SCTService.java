@@ -68,4 +68,13 @@ public interface SCTService {
      * @return
      */
     ResultUtils findGradeById(CourseTeacherInfo courseTeacherInfo);
+
+    /**
+     * 根据学生id查询学生选课情况
+     *
+     * @param studentId
+     * @param term
+     * @return
+     */
+    ResultUtils findCourserInfoById(Integer studentId, String term);
 }

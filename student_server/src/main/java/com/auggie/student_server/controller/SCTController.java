@@ -5,6 +5,7 @@ import com.auggie.student_server.entity.SCTInfo;
 import com.auggie.student_server.entity.StudentCourseTeacher;
 import com.auggie.student_server.service.SCTService;
 import com.auggie.student_server.utils.ResultUtils;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,9 +39,10 @@ public class SCTController {
         return sCTService.save(studentCourseTeacher) ? "选课成功" : "选课失败，联系管理员";
     }
 
-    @GetMapping("/findBySid/{{term}")
-    public List<CourseTeacherInfo> findBySid(@PathVariable Integer sid, @PathVariable String term) {
-        return sCTService.findBySid(sid, term);
+    @ApiOperation("根据学生id查询学生选课情况")
+    @GetMapping("/findCourseByStudentId/{studentId}/{term}")
+    public ResultUtils findBySid(@PathVariable Integer studentId, @PathVariable String term) {
+        return sCTService.findCourserInfoById(studentId, term);
     }
 
     @PostMapping("/findAll")

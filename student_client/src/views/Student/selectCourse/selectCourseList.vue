@@ -127,14 +127,16 @@ export default {
         that.tmpList = null
         that.total = null
         that.tableData = null
-        axios.post("http://localhost:10086/courseTeacher/findCourseTeacherInfo", newRuleForm).then(function (resp) {
-          that.tmpList = resp.data
-          that.total = resp.data.length
-          let start = 0, end = that.pageSize
-          let length = that.tmpList.length
-          let ans = (end < length) ? end : length
-          that.tableData = that.tmpList.slice(start, ans)
-        })
+        debugger;
+        axios.post(that.api.globalUrl + "courseTeacher/findCourseTeacherInfo", newRuleForm)
+            .then((resp) => {
+              if (resp.data.returnCode === '000000') {
+                that.tableData = resp.data.data.list;
+                that.total = resp.data.data.total;
+              } else {
+                that.$message.error(resp.data.returnMsg);
+              }
+            });
       },
       deep: true,
       immediate: true

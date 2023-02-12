@@ -20,7 +20,7 @@ import java.util.Map;
 @Mapper
 public interface StudentCourseTeacherMapper {
 
-    public List<CourseTeacherInfo> findByStudentId(@Param("sid") Integer sid,
+    public List<CourseTeacherInfo> findByStudentId(@Param("studentId") Integer studentId,
                                                    @Param("term") String term);
 
     public List<SCTInfo> findBySearch(@Param("sid") Integer sid,

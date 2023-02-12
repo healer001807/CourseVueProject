@@ -5,19 +5,19 @@
         <el-card>
           <el-form :inline="true" :model="ruleForm" :rules="rules" ref="ruleForm" label-width="150px" class="demo-ruleForm">
             <el-form-item label="工号" prop="tid">
-              <el-input v-model.number="ruleForm.tid"></el-input>
+              <el-input v-model.number="ruleForm.teacherId"></el-input>
             </el-form-item>
             <el-form-item label="教师名" prop="tname">
-              <el-input v-model.number="ruleForm.tname"></el-input>
+              <el-input v-model.number="ruleForm.teacherName"></el-input>
             </el-form-item>
             <el-form-item label="教师模糊查询">
               <el-switch v-model="ruleForm.tFuzzy"></el-switch>
             </el-form-item>
             <el-form-item label="课程号" prop="cid">
-              <el-input v-model.number="ruleForm.cid"></el-input>
+              <el-input v-model.number="ruleForm.courseId"></el-input>
             </el-form-item>
             <el-form-item label="课程名" prop="cname">
-              <el-input v-model.number="ruleForm.cname"></el-input>
+              <el-input v-model.number="ruleForm.courseName"></el-input>
             </el-form-item>
             <el-form-item label="课程模糊查询">
               <el-switch v-model="ruleForm.cFuzzy"></el-switch>

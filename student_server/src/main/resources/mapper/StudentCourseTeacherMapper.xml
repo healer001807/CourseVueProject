@@ -3,12 +3,27 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.auggie.student_server.mapper.StudentCourseTeacherMapper">
-    <select id="findByStudentId" resultType="CourseTeacherInfo">
-        SELECT c.cid, c.cname, t.tid, t.tname, sct.grade, c.ccredit
-        FROM studentms.sct sct
-                 INNER JOIN studentms.t t ON sct.tid = t.tid
-                 INNER JOIN studentms.c c ON sct.cid = c.cid
-        WHERE sct.sid = #{sid}
+
+    <resultMap id="baseScoreMap" type="com.auggie.student_server.entity.CourseTeacherInfo">
+        <id column="sctid" property="scoreId"/>
+        <result column="sid" property="studentId"/>
+        <result column="grade" property="grade"/>
+        <result column="term" property="term"/>
+        <result column="create_time" property="createTime"/>
+        <result column="tid" property="teacherId"/>
+        <result column="teacher_name" property="teacherName"/>
+        <result column="cid" property="courseId"/>
+        <result column="course_name" property="courseName"/>
+
+    </resultMap>
+
+    <!--根据学生id查找课程-->
+    <select id="findByStudentId" resultMap="baseScoreMap" >
+        SELECT c.cid, c.course_name, t.tid, t.teacher_name, sct.grade, c.course_credit, sct.sctid,sct.create_time
+        FROM studentms.t_score_course_teacher sct
+                 INNER JOIN studentms.t_teacher t ON sct.tid = t.tid
+                 INNER JOIN studentms.t_course c ON sct.cid = c.cid
+        WHERE sct.sid = #{studentId}
           AND sct.term = #{term}
     </select>
 
@@ -63,21 +78,12 @@
         </where>
     </select>
 
-    <resultMap id="baseScoreMap" type="com.auggie.student_server.entity.CourseTeacherInfo">
-        <id column="sctid" property="scoreId"/>
-        <result column="sid" property="studentId"/>
-        <result column="grade" property="grade"/>
-        <result column="term" property="term"/>
-        <result column="create_time" property="createTime"/>
+    <resultMap id="findAllMap" type="courseTeacherInfo" extends="baseScoreMap">
         <result column="student_name" property="studentName"/>
-        <result column="tid" property="teacherId"/>
-        <result column="teacher_name" property="teacherName"/>
-        <result column="cid" property="courseId"/>
-        <result column="course_name" property="courseName"/>
-
     </resultMap>
+
     <!--查询学生成绩-->
-    <select id="findAll" resultMap="baseScoreMap" parameterType="map">
+    <select id="findAll" resultMap="findAllMap" parameterType="map">
         select sct.sctid,
                sct.sid,
                sct.grade,

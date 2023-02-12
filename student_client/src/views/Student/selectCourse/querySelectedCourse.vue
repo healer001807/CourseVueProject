@@ -7,27 +7,27 @@
           style="width: 100%">
         <el-table-column
             fixed
-            prop="cid"
+            prop="courseId"
             label="课号"
             width="150">
         </el-table-column>
         <el-table-column
-            prop="cname"
+            prop="courseName"
             label="课程号"
             width="150">
         </el-table-column>
         <el-table-column
-            prop="tid"
+            prop="teacherId"
             label="教师号"
             width="150">
         </el-table-column>
         <el-table-column
-            prop="tname"
+            prop="teacherName"
             label="教师名称"
             width="150">
         </el-table-column>
         <el-table-column
-            prop="ccredit"
+            prop="courseCredit"
             label="学分"
             width="150">
         </el-table-column>
@@ -84,8 +84,7 @@ export default {
             type: 'success'
           });
           window.location.reload()
-        }
-        else {
+        } else {
           that.$message({
             showClose: true,
             message: '退课失败，请联系管理员',
@@ -114,16 +113,20 @@ export default {
     }
   },
   created() {
-    const sid = sessionStorage.getItem('sid')
-    const term = sessionStorage.getItem('currentTerm')
-    const that = this
-    axios.get('http://localhost:10086/SCT/findBySid/' + sid + '/' + term).then(function (resp) {
-      that.tmpList = resp.data
-      that.total = resp.data.length
-      let start = 0, end = that.pageSize
-      let length = that.tmpList.length
-      let ans = (end < length) ? end : length
-      that.tableData = that.tmpList.slice(start, end)
+    const studentId = sessionStorage.getItem('studentId');
+    const term = sessionStorage.getItem('currentTerm');
+    const that = this;
+    axios.get(that.api.globalUrl + 'SCT//findCourseByStudentId/' + studentId + '/' + term).then(function (resp) {
+      if ("000000" === resp.data.returnCode) {
+        that.tableData = resp.data.data;
+      } else {
+        that.$message.error(resp.data.returnMsg);
+      }
+      // that.total = resp.data.length
+      // let start = 0, end = that.pageSize
+      // let length = that.tmpList.length
+      // let ans = (end < length) ? end : length
+      // that.tableData = that.tmpList.slice(start, end)
     })
   },
 }
