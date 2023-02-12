@@ -3,7 +3,7 @@
 
     <el-container>
       <el-main>
-        <el-form :inline="true" :model="ruleForm" :rules="rules" ref="ruleForm" label-width="150px"
+        <el-form :inline="true" :model="ruleForm" ref="ruleForm" label-width="150px"
                  class="demo-ruleForm">
           <el-form-item label="课程号" prop="courseId">
             <el-input v-model.number="ruleForm.courseId"></el-input>
@@ -23,7 +23,7 @@
           <el-form-item>
             <el-button type="primary" @click="submitForm('ruleForm')">查询</el-button>
             <el-button @click="resetForm('ruleForm')">重置</el-button>
-            <el-button type="primary" @click="addForm('ruleForm')">新增</el-button>
+            <el-button type="primary" @click="addOrEditForm()">新增</el-button>
           </el-form-item>
         </el-form>
         <router-view></router-view>
@@ -54,7 +54,7 @@
               label="操作"
               width="250">
             <template slot-scope="scope">
-              <el-button @click="editor(scope.row)" type="primary" size="small">编辑</el-button>
+              <el-button @click="addOrEditForm(scope.row)" type="primary" size="small">编辑</el-button>
               <el-button slot="reference" @click="open(scope.row)" type="danger" size="small">删除</el-button>
             </template>
           </el-table-column>
@@ -68,12 +68,29 @@
         >
         </el-pagination>
       </el-main>
+
+      <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible">
+        <el-form style="width: 60%" :model="ruleAddForm" :rules="rules" ref="ruleForm" label-width="100px"
+                 class="demo-ruleForm">
+          <el-form-item label="课程名" prop="courseName">
+            <el-input v-model="ruleAddForm.courseName"></el-input>
+          </el-form-item>
+          <el-form-item label="学分" prop="courseCredit">
+            <el-input v-model.number="ruleAddForm.courseCredit"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button @click="dialogFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="addSubmitForm('ruleForm')">确 定</el-button>
+          </el-form-item>
+        </el-form>
+      </el-dialog>
     </el-container>
 
   </div>
 </template>
 
 <script>
+
 export default {
   methods: {
     //删除确认框
@@ -146,29 +163,7 @@ export default {
             }
           });
     },
-    /*offer(row) {
-      const teacherId = sessionStorage.getItem("teacherId")
-      const courseId = row.courseId
-      const term = sessionStorage.getItem("currentTerm")
-
-      const that = this
-      axios.get(that.api.globalUrl + 'courseTeacher/insert/' + courseId + '/' + teacherId + '/' + term).then(function (resp) {
-        if (resp.data === true) {
-          that.$message({
-            showClose: true,
-            message: '开设成功',
-            type: 'success'
-          });
-          window.location.reload()
-        } else {
-          that.$message({
-            showClose: true,
-            message: '开设失败，请联系管理员',
-            type: 'error'
-          });
-        }
-      });
-    },*/
+    // 查询全部课程
     findAll() {
       const that = this;
       //查询全部课程
@@ -189,21 +184,72 @@ export default {
     changePage(pageNum) {
       const that = this;
       that.pageNum = pageNum
-      //调用
       that.findAll();
     },
-    editor(row) {
-      this.$router.push({
-        path: '/editorCourse',
-        query: {
-          courseId: row.courseId
+    // 新增和编辑
+    addOrEditForm(row) {
+      if (row) {
+        this.ruleAddForm = JSON.parse(JSON.stringify(row));
+        console.log("编辑课程", this.ruleAddForm)
+        this.dialogTitle = '编辑课程';
+      } else {
+        this.dialogTitle = '新增课程';
+        this.ruleAddForm = {};
+      }
+      this.dialogFormVisible = true;
+    },
+    // 新增或修改
+    addSubmitForm(formName) {
+
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          var courseId = this.ruleAddForm.courseId;
+          if (courseId === null || "" === courseId || undefined === courseId) {
+            this.save(); // 新增
+          } else {
+            this.edit(); // 保存
+          }
+        } else {
+          return false;
         }
       });
     },
-    addForm(formName) {
-      this.$router.push({
-        path: '/addCourse',
-        query: {}
+    // 新增
+    save() {
+      const that = this
+      axios.post(that.api.globalUrl + "course/save", that.ruleAddForm).then(function (resp) {
+        console.log(resp)
+        if ('000000' === resp.data.returnCode) {
+          that.$message({
+            showClose: true,
+            message: '插入' + resp.data.returnMsg,
+            type: 'success'
+          });
+        } else {
+          that.$message.error(resp.data.returnMsg);
+        }
+      }).finally(() => {
+        that.dialogFormVisible = false;
+        that.findAll();
+      });
+    },
+    //修改
+    edit() {
+      const that = this;
+      axios.post(that.api.globalUrl + "course/updateCourse", this.ruleAddForm)
+          .then((resp) => {
+            if ('000000' === resp.data.returnCode) {
+              that.$message({
+                showClose: true,
+                message: '编辑' + resp.data.returnMsg,
+                type: 'success'
+              });
+            } else {
+              that.$message.error(resp.data.returnMsg);
+            }
+          }).finally(() => {
+        that.dialogFormVisible = false;
+        that.findAll();
       });
     },
     resetForm(formName) {
@@ -228,37 +274,26 @@ export default {
         highBound: '',
         lowBound: '',
         fuzzy: true
-      }
+      },
+      ruleAddForm: {
+        courseName: '',
+        courseCredit: '',
+        courseId: ''
+      },
+      rules: {
+        courseName: [
+          {required: true, message: '请输入名称', trigger: 'blur'},
+        ],
+        courseCredit: [
+          {required: true, message: '请输入学分', trigger: 'change'},
+          {type: 'number', message: '请输入数字', trigger: 'blur'},
+        ],
+      },
+      dialogFormVisible: false,
+      dialogTitle: ""
     }
   },
-  // props: {
-  //   ruleForm: Object,
-  //   isActive: Boolean
-  // },
-  watch: {
-    ruleForm: {
-      // handler(newRuleForm, oldRuleForm) {
-      //   console.log("组件监听 form")
-      //   console.log(newRuleForm)
-      //   const that = this
-      //   that.tmpList = null
-      //   that.total = null
-      //   that.tableData = null
-      //   /*axios.post(that.api.globalUrl + "course/findBySearch", newRuleForm)
-      //       .then((resp) => {
-      //         console.log("查询结果:");
-      //         console.log(resp)
-      //         // that.tmpList = resp.data
-      //         // that.total = resp.data.length
-      //         // let start = 0, end = that.pageSize
-      //         // let length = that.tmpList.length
-      //         // let ans = (end < length) ? end : length
-      //         // that.tableData = that.tmpList.slice(start, ans)
-      //       });*/
-      // },
-      deep: true,
-      immediate: true
-    }
-  },
+
 }
+
 </script>

@@ -17,7 +17,7 @@
           <el-form-item>
             <el-button type="primary" @click="submitForm('ruleForm')">查询</el-button>
             <el-button @click="resetForm('ruleForm')">重置</el-button>
-            <el-button type="primary" @click="addForm()">新增</el-button>
+            <el-button type="primary" @click="addOrEditorForm()">新增</el-button>
           </el-form-item>
         </el-form>
         <router-view></router-view>
@@ -55,7 +55,7 @@
               label="操作"
               width="250">
             <template slot-scope="scope">
-              <el-button @click="editor(scope.row)" type="primary" size="small">编辑</el-button>
+              <el-button @click="addOrEditorForm(scope.row)" type="primary" size="small">编辑</el-button>
               <el-button slot="reference" type="danger" @click="open(scope.row)" size="small">删除</el-button>
             </template>
           </el-table-column>
@@ -70,6 +70,23 @@
         </el-pagination>
 
       </el-main>
+
+      <el-dialog :title="dialogTitile" :visible.sync="dialogFormVisible">
+        <el-form style="width: 60%" :model="editRuleForm" :rules="rules" ref="ruleForm" label-width="100px"
+                 class="demo-ruleForm">
+          <el-form-item label="教师姓名" prop="teacherName">
+            <el-input v-model="editRuleForm.teacherName"></el-input>
+          </el-form-item>
+          <el-form-item label="初始密码" prop="teacherPwd">
+            <el-input v-model="editRuleForm.teacherPwd" show-password></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="editSubmitForm('ruleForm')">提交</el-button>
+            <el-button @click="dialogFormVisible = false">取 消</el-button>
+          </el-form-item>
+        </el-form>
+      </el-dialog>
+
     </el-container>
 
 
@@ -86,22 +103,32 @@ export default {
       pageNum: 1,
       total: null,
       tmpList: null,
-      rules: {
-        // teacherId: [
-        //   {type: 'number', message: '必须是数字类型'}
-        // ],
-      },
       ruleForm: {
         teacherId: '',
         teacherName: '',
         fuzzy: true,
+      },
+      editRuleForm: {
+        teacherId: '',
+        teacherName: '',
+        teacherPwd: ''
+      },
+      dialogFormVisible: false,
+      dialogTitle: '',
+      rules: {
+        teacherName: [
+          {required: true, message: '请输入姓名', trigger: 'blur'},
+          {min: 2, max: 5, message: '长度在 2 到 5 个字符', trigger: 'blur'}
+        ],
+        teacherPwd: [
+          {required: true, message: '请输入密码', trigger: 'change'}
+        ],
       }
     }
   },
   methods: {
     //查找所有
     findAll() {
-      debugger;
       const that = this;
       axios.post(that.api.globalUrl + 'teacher/findByPage/' + that.pageNum + '/' + that.pageSize)
           .then((resp) => {
@@ -142,27 +169,83 @@ export default {
       });
     },
     //新增
-    addForm() {
-      this.$router.push({
-        path: '/addTeacher',
-        query: {}
-      })
+    addOrEditorForm(row) {
+      if (row) {
+        this.editRuleForm = JSON.parse(JSON.stringify(row));
+        this.dialogTitle = '编辑教师';
+      } else {
+        this.dialogTitle = '新增教师';
+        this.editRuleForm = {};
+      }
+      this.dialogFormVisible = true;
     },
-    //编辑
-    editor(row) {
-      if (row.teacherName === 'admin') {
-        this.$message({
+    editSubmitForm() {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          const teacherId = this.editRuleForm.teacherId;
+          if (teacherId === null || "" === teacherId || undefined === teacherId) {
+            this.save(); // 新增
+          } else {
+            this.edit(); // 保存
+          }
+        } else {
+          return false;
+        }
+      });
+    },
+    save() {
+      const that = this;
+      if (that.editRuleForm.teacherName === 'admin') {
+        that.$message({
+          showClose: true,
+          message: 'admin 不可添加',
+          type: 'error'
+        });
+        return;
+      }
+      //添加教师
+      axios.post(that.api.globalUrl + "teacher/addTeacher", that.editRuleForm)
+          .then((resp) => {
+            if ('000000' === resp.data.returnCode) {
+              that.$message({
+                showClose: true,
+                message: '插入' + resp.data.returnMsg,
+                type: 'success'
+              });
+            } else {
+              that.$message.error(resp.data.returnMsg);
+            }
+          }).finally(() => {
+        that.dialogFormVisible = false;
+        that.findAll();
+      });
+    },
+    edit() {
+      // 通过前端校验
+      const that = this
+      if (that.editRuleForm.teacherName === 'admin') {
+        that.$message({
           showClose: true,
           message: 'admin 不可编辑',
           type: 'error'
         });
-        return
+        this.$router.push('/teacherList');
+        return;
       }
-      this.$router.push({
-        path: '/editorTeacher',
-        query: {
-          teacherId: row.teacherId
-        }
+      axios.post(that.api.globalUrl + "teacher/updateTeacher", that.editRuleForm)
+          .then((resp) => {
+            if ('000000' === resp.data.returnCode) {
+              that.$message({
+                showClose: true,
+                message: '编辑' + resp.data.returnMsg,
+                type: 'success'
+              });
+            } else {
+              that.$message.error(resp.data.returnMsg);
+            }
+          }).finally(() => {
+        that.dialogFormVisible = false;
+        that.findAll();
       })
     },
     //删除确认框
@@ -225,35 +308,6 @@ export default {
     this.findAll();
   },
 
-  // props: {
-  //   ruleForm: {
-  //     teacherId: "",
-  //     teacherName: "",
-  //     teacherPwd: ""
-  //   }
-  // },
-  watch: {
-    // ruleForm: {
-    //   handler(newRuleForm, oldRuleForm) {
-    //     console.log("组件监听 form")
-    //     const that = this
-    //     that.tmpList = null
-    //     that.total = null
-    //     that.tableData = null
-    //     axios.post(this.api.globalUrl + "teacher/findBySearch", newRuleForm)
-    //         .then(function (resp) {
-    //           console.log("查询结果:" + resp);
-    //           that.tmpList = resp.data.data
-    //           that.total = resp.data.data.length
-    //           let start = 0, end = that.pageSize
-    //           let length = that.tmpList.length
-    //           let ans = (end < length) ? end : length
-    //           that.tableData = that.tmpList.slice(start, end)
-    //         })
-    //   },
-    //   deep: true,
-    //   immediate: true
-    // }
-  },
+  watch: {},
 }
 </script>

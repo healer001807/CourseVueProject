@@ -18,7 +18,7 @@
           <el-form-item>
             <el-button type="primary" @click="submitForm('ruleForm')">查询</el-button>
             <el-button @click="resetForm('ruleForm')">重置</el-button>
-            <el-button type="primary" @click="flush()">新增</el-button>
+            <el-button type="primary" @click="addOrEditor()">新增</el-button>
           </el-form-item>
         </el-form>
         <!--        </el-card>-->
@@ -66,7 +66,7 @@
                                           >
                             <el-button slot="reference" type="danger" size="mini" @click="open(scope.row)">删除</el-button>
                                           </el-popconfirm>-->
-              <el-button @click="editor(scope.row)" type="primary" size="mini">编辑</el-button>
+              <el-button @click="addOrEditor(scope.row)" type="primary" size="mini">编辑</el-button>
               <el-button type="danger" size="mini" @click="open(scope.row)">删除</el-button>
             </template>
           </el-table-column>
@@ -83,6 +83,23 @@
         >
         </el-pagination>
       </el-main>
+
+      <el-dialog :title="dialogTitle" :visible.sync="dialogFormVisible">
+        <el-form style="width: 60%" :model="editRuleForm" :rules="rules" ref="ruleForm" label-width="100px"
+                 class="demo-ruleForm">
+          <el-form-item label="学生姓名" prop="studentName">
+            <el-input v-model="editRuleForm.studentName"></el-input>
+          </el-form-item>
+          <el-form-item label="初始密码" prop="studentPwd">
+            <el-input v-model="editRuleForm.studentPwd" show-password></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="editSubmitForm('ruleForm')">提交</el-button>
+            <el-button @click="resetForm('ruleForm')">重置</el-button>
+          </el-form-item>
+        </el-form>
+      </el-dialog>
+
     </el-container>
 
   </div>
@@ -102,6 +119,13 @@ export default {
         studentName: "",
         studentPwd: true
       },
+      editRuleForm: {
+        studentId: "",
+        studentName: "",
+        studentPwd: ''
+      },
+      dialogTitle: '', // 表单title
+      dialogFormVisible: false, // 弹框
       tmpList: {},
       rules: {
         studentId: [
@@ -188,12 +212,69 @@ export default {
           });
     },
     //修改
-    editor(row) {
-      this.$router.push({
-        path: '/editorStudent',
-        query: {
-          studentId: row.studentId
+    addOrEditor(row) {
+      if (row) {
+        this.editRuleForm = JSON.parse(JSON.stringify(row));
+        this.dialogTitle = '编辑学生';
+      } else {
+        this.dialogTitle = '新增学生';
+        this.editRuleForm = {};
+      }
+      this.dialogFormVisible = true;
+    },
+    // 新增或修改
+    editSubmitForm(formName) {
+
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          const studentId = this.editRuleForm.studentId;
+          if (studentId === null || "" === studentId || undefined === studentId) {
+            this.save(); // 新增
+          } else {
+            this.edit(); // 保存
+          }
+        } else {
+          return false;
         }
+      });
+    },
+    // 新增
+    save() {
+      const that = this;
+      axios.post(this.api.globalUrl + "student/addStudent", this.ruleForm)
+          .then((resp) => {
+            if ("000000" === resp.data.returnCode) {
+              that.$message({
+                showClose: true,
+                message: resp.data.returnMsg,
+                type: 'success'
+              });
+            } else {
+              that.$message.error(resp.data.returnMsg);
+            }
+          }).finally(() => {
+        that.dialogFormVisible = false;
+        that.findAll();
+      });
+    },
+    // 编辑
+    edit() {
+      // 通过前端校验
+      const that = this
+      axios.post(that.api.globalUrl + 'student/updateStudent', this.ruleForm)
+          .then(function (resp) {
+            if ('000000' === resp.data.returnCode) {
+              that.$message({
+                showClose: true,
+                message: '编辑' + resp.data.returnMsg,
+                type: 'success'
+              });
+            } else {
+              that.$message.error(resp.data.returnMsg);
+            }
+          }).finally(() => {
+        that.dialogFormVisible = false;
+        that.findAll();
       });
     },
     //查询全部
@@ -210,14 +291,7 @@ export default {
             }
           });
     },
-    //新增
-    flush() {
-      this.$router.push({
-        path: '/addStudent',
-        query: {}
-      });
-    },
-    //条件查询
+    // 条件查询
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
