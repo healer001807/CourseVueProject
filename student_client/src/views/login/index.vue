@@ -33,7 +33,6 @@
               <el-form-item>
                 <el-button type="primary" @click="submitForm('ruleForm')">登陆</el-button>
                 <el-button @click="resetForm('ruleForm')">重置</el-button>
-                <el-button @click="test('ruleForm')">test</el-button>
               </el-form-item>
             </el-form>
           </div>
@@ -204,10 +203,8 @@ export default {
       );
     },
     resetForm(formName) {
-      this.$refs[formName].resetFields();
-    },
-    test(forName) {
-      console.log(this.ruleForm)
+      const that =this;
+      that.$refs[formName].resetFields();
     }
   }
 }

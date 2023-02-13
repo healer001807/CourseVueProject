@@ -39,7 +39,7 @@ public interface SCTService {
 
     boolean deleteBySCT(StudentCourseTeacher studentCourseTeacher);
 
-    boolean deleteById(Integer sid, Integer cid, Integer tid, String term);
+    ResultUtils deleteById(Integer sid, Integer cid, Integer tid, String term);
 
     SCTInfo findByIdWithTerm(Integer sid, Integer cid, Integer tid, String term);
 
@@ -51,7 +51,13 @@ public interface SCTService {
      */
     ResultUtils updateById(Map<String, String> params);
 
-    List<SCTInfo> findBySearch(Map<String, String> map);
+    /**
+     * 根据条件查询学生成绩
+     *
+     * @param map
+     * @return
+     */
+    ResultUtils findBySearch(Map<String, String> map);
 
     /**
      * 查询当前学期的成绩

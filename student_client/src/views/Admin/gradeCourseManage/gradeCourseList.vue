@@ -106,7 +106,7 @@
               width="200">
             <template slot-scope="scope">
               <el-button @click="editor(scope.row)" type="primary" size="small">编辑</el-button>
-              <el-button slot="reference" type="danger" size="small">删除</el-button>
+              <el-button slot="reference" type="danger" size="small" @click="open(scope.row)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -214,39 +214,48 @@ export default {
     }
   },
   methods: {
-    select(row) {
-      console.log(row)
+    //删除确认框
+    open(row) {
+      this.$confirm('此操作将永久删除' + row.courseId + '号课程的信息, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.deleteScore(row)
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
     },
     // 删除学生成绩
-    deleteTeacher(row) {
-      const that = this
-      console.log(row)
-      const sid = row.sid
-      const cid = row.cid
-      const tid = row.tid
-      const term = row.term
-      axios.get("http://localhost:10086/SCT/deleteById/" + sid + '/' + cid + '/' + tid + '/' + term).then(function (resp) {
-        console.log(resp)
-        if (resp.data === true) {
-          that.$message({
-            showClose: true,
-            message: '删除成功',
-            type: 'success'
-          });
-          window.location.reload()
-        } else {
-          that.$message({
-            showClose: true,
-            message: '删除出错，请查询数据库连接',
-            type: 'error'
-          });
-        }
-      }).catch(function (error) {
+    deleteScore(row) {
+      const that = this;
+      axios.get(that.api.globalUrl + "SCT/deleteById/" + row.studentId + "/" + row.courseId + "/" + row.teacherId + "/" + window.encodeURI(JSON
+          .stringify(row.term)))
+          .then((resp) => {
+            if ('000000' === resp.data.returnCode) {
+              that.$message({
+                showClose: true,
+                message: '删除' + resp.data.returnMsg,
+                type: 'success'
+              });
+            } else {
+              that.$message({
+                showClose: true,
+                message: '删除出错，请查询数据库连接',
+                type: 'error'
+              });
+            }
+          }).catch(function (error) {
         that.$message({
           showClose: true,
           message: '删除出错，存在外键依赖',
           type: 'error'
         });
+      }).finally(() => {
+        that.findAll();
       })
     },
     // 切换页码
@@ -256,7 +265,6 @@ export default {
       that.findAll();
     },
     editor(row) {
-      console.log("编辑学生成绩")
       this.editRuleForm = JSON.parse(JSON.stringify(row));
       this.dialogFormVisible = true;
       this.dialogTitle = '编辑学生成绩';
@@ -315,10 +323,30 @@ export default {
         }
       });
     },
+    findBySearch() {
+      const that = this;
+      axios.post(that.api.globalUrl + "SCT/findBySearch", that.ruleForm)
+          .then((resp) => {
+            if (resp.data.returnCode === '000000') {
+              that.$message({
+                showClose: true,
+                message: '查询' + resp.data.returnMsg,
+                type: 'success'
+              });
+              that.tableData = resp.data.data;
+              console.log("搜索", that.tableData);
+            } else {
+              that.$message.error(resp.data.returnMsg);
+            }
+          });
+    },
     // 重置表单
     resetForm(formName) {
-      this.$refs[formName].resetFields();
-    },
+      console.log("ces")
+      const that =this;
+      that.$refs[formName].resetFields();
+    }
+    ,
     editSubmitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -329,7 +357,8 @@ export default {
         }
       });
 
-    },
+    }
+    ,
     // 修改成绩
     editGradeById() {
       const that = this
@@ -359,15 +388,11 @@ export default {
           }).finally(() => {
         that.dialogFormVisible = false;
       });
-    },
+    }
+    ,
   },
 
-
-  // props: {
-  //   ruleForm: Object,
-  // },
   created() {
-    debugger;
     this.findAll();
   },
 }

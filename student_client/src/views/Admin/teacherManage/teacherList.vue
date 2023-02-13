@@ -300,7 +300,8 @@ export default {
     },
     //重置
     resetForm(formName) {
-      this.$refs[formName].resetFields();
+      const that =this;
+      that.$refs[formName].resetFields();
     }
   },
 

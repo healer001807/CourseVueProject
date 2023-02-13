@@ -27,43 +27,48 @@
           AND sct.term = #{term}
     </select>
 
-    <select id="findBySearch" resultType="SCTInfo">
-        SELECT c.cid, c.cname, t.tid, t.tname, s.sid, s.sname, sct.grade, sct.term
+    <resultMap id="findAllMap" type="courseTeacherInfo" extends="baseScoreMap">
+        <result column="student_name" property="studentName"/>
+    </resultMap>
+
+    <select id="findBySearch" resultMap="findAllMap" >
+        SELECT c.cid, c.course_name, t.tid, t.teacher_name, s.sid, s.student_name,
+               sct.grade, sct.term
         FROM studentms.t_score_course_teacher sct INNER JOIN studentms.t_student s ON sct.sid = s.sid
-        INNER JOIN studentms.t t ON sct.tid = t.tid
-        INNER JOIN studentms.c c ON sct.cid = c.cid
+        INNER JOIN studentms.t_teacher t ON sct.tid = t.tid
+        INNER JOIN studentms.t_course c ON sct.cid = c.cid
         <where>
-            <if test="sid != null">
-                s.sid = #{sid}
+            <if test="studentId != null and studentId != '' ">
+                s.sid = #{studentId}
             </if>
-            <if test="tid != null">
-                AND t.tid = #{tid}
+            <if test="teacherId != null">
+                AND t.tid = #{teacherId}
             </if>
-            <if test="cid != null">
-                AND c.cid = #{cid}
+            <if test="courseId != null">
+                AND c.cid = #{courseId}
             </if>
-            <if test="sname != null">
+            <if test="studentName != null">
                 <if test="sFuzzy == 0">
-                    AND s.sname = #{sname}
+                    AND s.student_name = #{studentName}
                 </if>
                 <if test="sFuzzy == 1">
-                    AND s.sname LIKE CONCAT('%', #{sname}, '%')
+                    AND s.student_name LIKE CONCAT('%', #{studentName}, '%')
                 </if>
             </if>
-            <if test="tname != null">
+            <if test="teacherName != null">
                 <if test="tFuzzy == 0">
-                    AND t.tname = #{tname}
+                    AND t.teacher_name = #{teacherName}
                 </if>
                 <if test="tFuzzy == 1">
-                    AND t.tname LIKE CONCAT('%', #{tname}, '%')
+                    AND t.teacher_name LIKE CONCAT('%', #{teacherName}, '%')
                 </if>
             </if>
-            <if test="cname != null">
+            <if test="courseName != null">
                 <if test="cFuzzy == 0">
-                    AND c.cname = #{cname}
+                    AND c.course_name = #{courseName}
                 </if>
                 <if test="cFuzzy == 1">
-                    AND c.cname LIKE CONCAT('%', #{cname}, '%')
+                    AND c.course_name LIKE CONCAT('%', #{courseName}, '%')
                 </if>
             </if>
             <if test="term != null">
@@ -77,10 +82,6 @@
             </if>
         </where>
     </select>
-
-    <resultMap id="findAllMap" type="courseTeacherInfo" extends="baseScoreMap">
-        <result column="student_name" property="studentName"/>
-    </resultMap>
 
     <!--查询学生成绩-->
     <select id="findAll" resultMap="findAllMap" parameterType="map">

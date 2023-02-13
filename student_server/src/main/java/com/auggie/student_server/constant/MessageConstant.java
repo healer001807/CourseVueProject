@@ -30,4 +30,5 @@ public class MessageConstant {
     public static final String DELETE_COURSE_INFO_ERROR = "开设课程删除失败";
     public static final String UPDATE_SCORE_ERROR = "修改成绩失败";
     public static final String QUERY_SCORE_ERROR = "成绩查询失败";
+    public static final String DELETE_SCORE_ERROR = "删除成绩失败";
 }

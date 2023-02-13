@@ -62,13 +62,18 @@ public class SCTServiceImpl implements SCTService {
     }
 
     @Override
-    public boolean deleteById(Integer sid, Integer cid, Integer tid, String term) {
-        StudentCourseTeacher studentCourseTeacher = new StudentCourseTeacher();
-        studentCourseTeacher.setSid(sid);
-        studentCourseTeacher.setCid(cid);
-        studentCourseTeacher.setTid(tid);
-        studentCourseTeacher.setTerm(term);
-        return studentCourseTeacherMapper.deleteBySCT(studentCourseTeacher);
+    public ResultUtils deleteById(Integer studentId, Integer courseId, Integer teacherId, String term) {
+        try {
+            StudentCourseTeacher studentCourseTeacher = new StudentCourseTeacher();
+            studentCourseTeacher.setStudentId(studentId);
+            studentCourseTeacher.setCourseId(courseId);
+            studentCourseTeacher.setTeacherId(teacherId);
+            studentCourseTeacher.setTerm(term);
+            studentCourseTeacherMapper.deleteBySCT(studentCourseTeacher);
+            return ResultUtils.success(ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMsg());
+        } catch (Exception e) {
+            throw new ValidationException(MessageConstant.DELETE_SCORE_ERROR);
+        }
     }
 
     @Override
@@ -106,70 +111,67 @@ public class SCTServiceImpl implements SCTService {
     }
 
     @Override
-    public List<SCTInfo> findBySearch(Map<String, String> map) {
-        Integer sid = null, cid = null, tid = null;
-        String sname = null, cname = null, tname = null, term = null;
-        Integer sFuzzy = null, cFuzzy = null, tFuzzy = null;
-        Integer lowBound = null, highBound = null;
+    public ResultUtils findBySearch(Map<String, String> map) {
+        try {
+            Integer studentId = null, courseId = null, teacherId = null;
+            String studentName = null, courseName = null, teacherName = null, term = null;
+            Integer sFuzzy = null, cFuzzy = null, tFuzzy = null;
+            Integer lowBound = null, highBound = null;
 
-        if (map.containsKey("cid")) {
-            try {
-                cid = Integer.parseInt(map.get("cid"));
-            } catch (Exception e) {
+            if (map.containsKey("courseId") && StringUtils.isNotEmpty(map.get("courseId"))) {
+                try {
+                    courseId = Integer.parseInt(map.get("courseId"));
+                } catch (Exception e) {
+                }
             }
-        }
-        if (map.containsKey("sid")) {
-            try {
-                sid = Integer.parseInt(map.get("sid"));
-            } catch (Exception e) {
+            if (map.containsKey("studentId") && StringUtils.isNotEmpty(map.get("studentId"))) {
+                try {
+                    studentId = Integer.parseInt(map.get("studentId"));
+                } catch (Exception e) {
+                }
             }
-        }
-        if (map.containsKey("tid")) {
-            try {
-                tid = Integer.parseInt(map.get("tid"));
-            } catch (Exception e) {
+            if (map.containsKey("teacherId") && StringUtils.isNotEmpty(map.get("teacherId"))) {
+                teacherId = Integer.parseInt(map.get("teacherId"));
             }
-        }
-        if (map.containsKey("sname")) {
-            sname = map.get("sname");
-        }
-        if (map.containsKey("tname")) {
-            tname = map.get("tname");
-        }
-        if (map.containsKey("cname")) {
-            cname = map.get("cname");
-        }
-        if (map.containsKey("term")) {
-            term = map.get("term");
-        }
-        if (map.containsKey("sFuzzy")) {
-            sFuzzy = map.get("sFuzzy").equals("true") ? 1 : 0;
-        }
-        if (map.containsKey("tFuzzy")) {
-            tFuzzy = map.get("tFuzzy").equals("true") ? 1 : 0;
-        }
-        if (map.containsKey("cFuzzy")) {
-            cFuzzy = map.get("cFuzzy").equals("true") ? 1 : 0;
-        }
-        if (map.containsKey("lowBound")) {
-            try {
+            if (map.containsKey("studentName") && StringUtils.isNotEmpty(map.get("studentName"))) {
+                studentName = map.get("studentName");
+            }
+            if (map.containsKey("teacherName") && StringUtils.isNotEmpty(map.get("teacherName"))) {
+                teacherName = map.get("teacherName");
+            }
+            if (map.containsKey("courseName") && StringUtils.isNotEmpty(map.get("courseName"))) {
+                courseName = map.get("courseName");
+            }
+            if (map.containsKey("term")) {
+                term = map.get("term");
+            }
+            if (map.containsKey("sFuzzy")) {
+                sFuzzy = map.get("sFuzzy").equals("true") ? 1 : 0;
+            }
+            if (map.containsKey("tFuzzy")) {
+                tFuzzy = map.get("tFuzzy").equals("true") ? 1 : 0;
+            }
+            if (map.containsKey("cFuzzy")) {
+                cFuzzy = map.get("cFuzzy").equals("true") ? 1 : 0;
+            }
+            if (map.containsKey("lowBound") && StringUtils.isNotEmpty(map.get("lowBound"))) {
                 lowBound = Integer.parseInt(map.get("lowBound"));
-            } catch (Exception e) {
             }
-        }
-        if (map.containsKey("highBound")) {
-            try {
+            if (map.containsKey("highBound") && StringUtils.isNotEmpty(map.get("highBound"))) {
                 highBound = Integer.valueOf(map.get("highBound"));
-            } catch (Exception e) {
             }
-        }
 
-        System.out.println("SCT 查询：" + map);
-        return studentCourseTeacherMapper.findBySearch(
-                sid, sname, sFuzzy,
-                cid, cname, cFuzzy,
-                tid, tname, tFuzzy,
-                lowBound, highBound, term);
+            logger.info("SCT 查询：" + map);
+            List<SCTInfo> sctInfos = studentCourseTeacherMapper.findBySearch(
+                    studentId, studentName, sFuzzy,
+                    courseId, courseName, cFuzzy,
+                    teacherId, teacherName, tFuzzy,
+                    lowBound, highBound, term);
+            return ResultUtils.success(ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMsg(), sctInfos);
+        } catch (NumberFormatException e) {
+            logger.error("查询成绩异常" + e);
+            throw new ValidationException(MessageConstant.QUERY_SCORE_ERROR);
+        }
     }
 
     @Override

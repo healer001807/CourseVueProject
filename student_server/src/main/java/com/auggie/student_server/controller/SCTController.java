@@ -61,27 +61,31 @@ public class SCTController {
         return sCTService.deleteBySCT(studentCourseTeacher);
     }
 
+    @ApiOperation(value = "根据条件查询")
     @PostMapping("/findBySearch")
-    public List<SCTInfo> findBySearch(@RequestBody Map<String, String> map) {
+    public ResultUtils findBySearch(@RequestBody Map<String, String> map) {
         return sCTService.findBySearch(map);
     }
 
+    @ApiOperation(value = "查询学生成绩")
     @PostMapping("/findGradeById")
     public ResultUtils findGradeById(@RequestBody CourseTeacherInfo courseTeacherInfo) {
         return sCTService.findGradeById(courseTeacherInfo);
     }
 
+    @ApiOperation(value = "修改学生成绩")
     @PostMapping("/updateById")
     public ResultUtils updateById(@RequestBody Map<String, String> params) {
         return sCTService.updateById(params);
     }
 
-    @GetMapping("/deleteById/{sid}/{cid}/{tid}/{term}")
-    public boolean deleteById(@PathVariable Integer sid,
-                              @PathVariable Integer cid,
-                              @PathVariable Integer tid,
-                              @PathVariable String term) {
-        return sCTService.deleteById(sid, cid, tid, term);
+    @ApiOperation(value = "删除学生成绩")
+    @GetMapping("/deleteById/{studentId}/{courseId}/{teacherId}/{term}")
+    public ResultUtils deleteById(@PathVariable Integer studentId,
+                                  @PathVariable Integer courseId,
+                                  @PathVariable Integer teacherId,
+                                  @PathVariable String term) {
+        return sCTService.deleteById(studentId, courseId, teacherId, term);
     }
 
 

@@ -23,14 +23,14 @@ public interface StudentCourseTeacherMapper {
     public List<CourseTeacherInfo> findByStudentId(@Param("studentId") Integer studentId,
                                                    @Param("term") String term);
 
-    public List<SCTInfo> findBySearch(@Param("sid") Integer sid,
-                                      @Param("sname") String sname,
+    public List<SCTInfo> findBySearch(@Param("studentId") Integer studentId,
+                                      @Param("studentName") String studentName,
                                       @Param("sFuzzy") Integer sFuzzy,
-                                      @Param("cid") Integer cid,
-                                      @Param("cname") String cname,
+                                      @Param("courseId") Integer courseId,
+                                      @Param("courseName") String courseName,
                                       @Param("cFuzzy") Integer cFuzzy,
-                                      @Param("tid") Integer tid,
-                                      @Param("tname") String tname,
+                                      @Param("teacherId") Integer teacherId,
+                                      @Param("teacherName") String teacherName,
                                       @Param("tFuzzy") Integer tFuzzy,
                                       @Param("lowBound") Integer lowBound,
                                       @Param("highBound") Integer highBound,
@@ -55,8 +55,9 @@ public interface StudentCourseTeacherMapper {
             " WHERE sct.sctid =#{scoreId} and sct.term = #{term}")
     boolean updateById(Map<String, Object> params);
 
-    @Delete("DELETE FROM studentms.t_score_course_teacher WHERE sid = #{sct.sid} AND tid = #{sct.tid} AND cid = #{sct.cid}")
-    public boolean deleteBySCT(@Param("sct") StudentCourseTeacher sct);
+    @Delete("DELETE FROM studentms.t_score_course_teacher WHERE delete_status ='1' and sid = #{sct.studentId} " +
+            "AND tid = #{sct.teacherId} AND cid = #{sct.courseId}")
+    boolean deleteBySCT(@Param("sct") StudentCourseTeacher sct);
 
     /**
      * 查询成绩
