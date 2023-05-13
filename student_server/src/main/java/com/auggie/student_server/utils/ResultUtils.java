@@ -79,6 +79,17 @@ public class ResultUtils<T> {
         return new ResultUtils(returnCode, returnMsg);
     }
 
+    /***
+     * @description
+     * @author kangwei
+     * @date 2023-5-13
+     * @param data
+     @return com.auggie.student_server.utils.ResultUtils
+     */
+    public static <T> ResultUtils success(T data) {
+        return new ResultUtils(ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMsg(), data);
+    }
+
     /**
      * 成功
      *

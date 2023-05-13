@@ -10,8 +10,8 @@ import lombok.Data;
  **/
 public enum ResultCode {
 
-    SUCCESS("000000", "成功"),
-    ERROR("100000", "失败"),
+    SUCCESS("000000", "success"),
+    ERROR("100000", "fail"),
     ;
 
     private String code;
