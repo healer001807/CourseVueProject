@@ -4,6 +4,10 @@ spring:
     url: jdbc:mysql://localhost:3306/studentms?setUnicode=true&characterEncoding=utf8&useAffectedRows=true
     username: root
     password: 123456
+#  messages: #国际化配置
+#    basename: i18n/msg
+
+msg-baseName: i18n/msg
 
 server:
   port: 10086
